@@ -1,4 +1,5 @@
 # Project: Web Application
+Web application created and developed in the Python programming environment using Django as framework.
 # Index
 - [Description](#description)
 - [Project Requirements](#requirements)
