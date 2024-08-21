@@ -1,0 +1,60 @@
+{% extends '../base.html' %}
+{% block title %}
+Update category
+{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class = "my-3">
+    <h1  class="h2">Update Category </h1> 
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form class="inventory-form" method="post" >
+        <div class="card card-body">
+            {% csrf_token %}
+            <div class="form-group col-md-5 mb-0 field-readonly">
+                <div class="form-gcus">
+                    <label for="id_inv_no">{{ form.ref_no.label }}</label>
+                    <input type="text" name="id_inv_no" value='{{ category.ref_no}}'  class="px-2 rounded border textinput form-control" maxlength="15" readonly="" id="id_inv_no">
+                </div>
+            </div>
+            <div class="invoices-row">
+                <div class="form-group col-md-12 mb-0">
+                    {{ form.name|as_crispy_field }}
+                </div>
+            </div>
+            <div class="invoices-row">
+                <div class="form-group col-md-12 mb-0">
+                    {{ form.slug|as_crispy_field }}
+                </div>
+            </div>
+            <!--div class="orders-row my-2">
+                <div class="form-group col-md-4 mb-0">
+                    <label for="update">Created at</label><br>
+                    <input  name="update" class="w-100 rounded border" value="{{account.created}}" readonly>
+                </div>
+                <div  class="form-group col-md-4 mb-0">
+                    <label for="update">Updated at</label><br>
+                    <input  name="update" class="w-100 rounded border" value="{{account.updated}}" readonly>
+                </div>
+            </!--div-->
+        </div>
+
+        <button class="btn_save btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit" value="Save changes">
+            Save
+        </button>
+        <a href="{% url 'inventory:categories' %}" role="button" class="btn btn-secondary w-100">Cancel</a>
+    </form>
+    <form class="inventory-form" action="{% url 'inventory:delete_category' category.id %}" method="post">
+        {% csrf_token %}
+        <p class=" h3 pt-4 font-weight-bold">Delete category </p>
+        <p>Are you sure you want to delete the category?</p>
+        <button type="submit" role="button" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100">Delete</button>
+    </form>
+</div>
+{% endblock %}

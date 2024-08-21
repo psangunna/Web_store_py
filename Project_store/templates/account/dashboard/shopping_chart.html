@@ -1,0 +1,36 @@
+{% extends "../sub_base.html" %}
+{% block title %}Purchase Consumption{% endblock %}
+
+{% block sub_content %}
+<!--Se incluye la biblioteca Plotly desde un CDN. Plotly es una biblioteca de gráficos interactivos, 
+y este script proporciona las funciones necesarias para crear gráficos en la página.-->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<h1 class="h2">Your Purchase Consumption</h1>
+<div>You can control your purchases made</div>
+<hr>
+{% if shopping_chart|length == 0 %}
+  <div class="col-12">There are no purchase made, 
+    <a href="{% url 'store:store_home' %}" class="custom-link">Shop</a>
+  </div>
+{% endif %}
+
+<div class="row mx-auto justify-content-center">
+    <div class="col-md-10 my-2">
+        <div class="bg-white"  style = "width:90%;" >
+            <div class="card-body">
+                <div id = "shop_chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Se crea una variable graph2 que almacena un objeto JavaScript convertido a partir de la cadena JSON proporcionada por la variable shopping_chart. 
+    //La función JSON.parse se utiliza para interpretar la cadena JSON.
+    var graph2 = JSON.parse('{{ shopping_chart|safe }}');
+    //Se utiliza la biblioteca Plotly para crear un nuevo gráfico 
+    //en el contenedor con el ID shop_chart utilizando los datos proporcionados en graph2.
+    Plotly.newPlot('shop_chart', graph2);
+</script>
+{% endblock sub_content %}

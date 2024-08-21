@@ -1,0 +1,260 @@
+body{
+    background: rgb(230, 227, 227);
+}
+.my-card:hover{
+    transform: scale(1.1);
+    transition: 0.2s ease-in-out;
+}
+
+        /* Modify the background color */     
+        .btn-outline-success {
+            --bs-btn-color:#020B0F ;
+            --bs-btn-border-color:#020B0F ;
+            --bs-btn-hover-bg:#F6D608;
+            --bs-btn-hover-border-color:#F6D608;
+        }
+.add {
+    color:#fff;
+    background-color:#5cb85c;
+    border-color:#4cae4c;
+}
+.add.focus,.add:focus{color:#fff;background-color:#F6D608;border-color:#F6D608}
+.add:hover{color:#fff;background-color:#F6D608;border-color:#F6D608}
+
+
+/* Modify the background color */     
+
+.btn_save {
+    text-decoration:none;
+    font-weight: 600;
+    font-size: 16px;
+    color:white;
+    padding-top:30px;
+    padding-bottom:30px;
+    padding-left:40px;
+    padding-right:40px;
+    background-color: rgb(34, 139, 34);
+    border-color:  rgb(34, 139, 34);
+    border-width: 1px;
+    border-style: solid;
+    border-radius:8px;
+}
+.btn_save:hover {
+    background-color:  rgb(0, 100, 0);
+    border-color: rgb(0, 100, 0) }
+
+
+.btn_add {
+    background-color: #1ED4F8;
+    color: white;
+    padding: 13px 50px; 
+    text-decoration:none;
+    font-weight: 300; 
+    font-size: 20px; 
+    border-color:
+    #D3D8DA;
+    border-width: 1px;
+    border-style: solid;
+    border-radius:10px;        
+  }
+
+.btn_add:hover {
+    background-color: #8F9091 ;
+    border-color:#8F9091 ;
+  }
+
+
+.inventory-form input {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    height: calc(2em + .75rem + 2px);
+    padding-left: 10px;
+
+}
+  
+    .inventory-form input:focus {
+        border-color:  #1497ff;
+        box-shadow: none;
+    }
+
+    input[type="checkbox"] {
+        appearance: none; /* delete default style*/
+        width: 17px; 
+        height: 17px;
+        border: 2px solid #666;
+        border-radius: 4px; 
+        background-color: #fff; 
+        cursor: pointer; 
+        position: relative; /* checkmark position*/
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: rgb(124, 3, 3); 
+        border-color: rgb(124, 3, 3);
+    }
+
+    .inventory-form input[type="checkbox"] {
+        /* Customize the style of the checkbox */
+        width: 20px; 
+        height: 20px; 
+        margin-right: 5px; 
+    }
+
+    .inventory-form textarea {
+        width: 100%;
+        height: 80px;
+        border: 2px solid #ccc ;
+        border-radius: 5px;
+
+    }
+
+    .inventory-form select {
+        border-radius: 5px;
+        border: 2px solid #ccc ;
+
+    }
+
+
+  
+/*invoices row*/
+.orders-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-top: 10px;
+}
+
+
+.sidenave {
+    position:relative;
+    z-index:1;
+    bottom:0;
+    overflow-x: hidden;
+    padding-top:10px;
+    padding-bottom:10px;
+}
+.sidenave a {
+    padding:6px 8px 6px 16px;
+    text-decoration: none;
+    font-size:20px;
+    color:black;
+    display:block;
+    }
+
+.sidenave a:hover{
+    color: #1ED4F8;
+    }
+ 
+
+
+.narration { text-align:left;
+    border: None;
+    padding:5 px;
+    width: 250 px;
+
+}
+
+.invoices-row {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    padding-top: 10px;
+}
+
+.invoices-div {
+    border-color:#D3D8DA;
+
+}
+
+.btn_add {
+    background-color: #1ED4F8;
+    color: white;
+    padding: 13px 50px; 
+    text-decoration:none;
+    font-weight: 300; 
+    font-size: 20px; 
+    border-color:
+    #D3D8DA;
+    border-width: 1px;
+    border-style: solid;
+    border-radius:10px;        
+  }
+
+
+
+.hidden { display: none }
+
+
+
+.no-events-field {
+    pointer-events: none;
+}
+    .no-events-field input[type=text] {
+        width: 100%;
+        border: 1px solid #D3D8DA;
+        border-radius: 5px;
+    }
+    
+    .no-events-field select {
+        width: 100%;
+        border: 1px solid #D3D8DA;
+        border-radius: 5px;
+    }
+
+
+.form-gcus{
+    margin-bottom: 15px;  /* Adjust the margin as needed */
+}
+
+    .form-gcus label {
+        display: block;  /* Make the label a block-level element */
+
+    }
+
+.custom-text {  
+    border: 2px solid;
+    width: 100%;
+    border-radius: 5px; 
+    padding-left:10px;}
+
+.field-readonly input[type=text] {
+    width: 100%;
+    border: 1px solid #D3D8DA;
+    border-radius: 5px;
+  }
+
+.field-readonly-select select {
+    pointer-events: none;
+    width: 100%;
+    border: 1px solid #D3D8DA;
+    border-radius: 5px;
+   
+  }
+
+
+.table-container {
+    display: flex;
+    }
+
+    .table-container  div {
+        flex: 1;
+        margin-right: 10px; 
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #dddddd;
+      padding-left: 3px;
+      text-align: left;
+    }
+    .grey {
+        background-color:rgba(15, 180, 234, 0.2);
+        text-align:center;
+        font-weight: lighter;
+        font-size: small;
+    }

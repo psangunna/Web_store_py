@@ -1,0 +1,16 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block additionalStyles %}
+<link rel="stylesheet" href="{% static 'chatbox/css/chatbox.css' %}"/>
+{% endblock %}
+
+{% block content %}
+<div class="container myDiv">
+
+  <div class="col-12 col-md-12 col-lg-12 mx-auto">
+    {% block sub_content %}{% endblock %}
+  </div>
+  
+</div>
+{% endblock %}

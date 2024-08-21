@@ -1,0 +1,98 @@
+{% extends "../base.html" %}
+{% load static %} 
+{% block additionalStyles %}
+<link rel="stylesheet" href="{% static 'store/css/store.css' %}"/>
+{% endblock %}
+{% block title %}
+{% if product %}{{ product.title }}{% else %}Product{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row g-3">
+    <div class="col-md-5 ps-3 col-lg-5 order-md-last p-0 order-1">
+      <div class="d-grid gap-2">
+        <div class="d-flex d-flex-inline justify-content-between">
+          <div><span class="h3">€{{ product.sell_price }}</span>
+            <p class="text-muted">includes tax</p>
+          </div>
+          <div>
+            <label for="quantity" class="small">Quantity</label>
+            <input id="quantity" type="number" value="1" style="width: 50px;"></input>
+          </div>
+        </div>
+        <hr>
+        <button type="button" id="add-button" value="{{product.id}}" class = "btn btn-info btn-block text-center text-white fw-bold w-100">Add to
+          basket
+        </button>
+      </div>
+    </div>
+    <div class="col-md-7 col-lg-7 p-0">
+      <div class="card mb-3 border-0">
+        <div class="row g-0">
+          <div class="col-md-12">
+            <div class="card-body p-1">
+              <h1 class="mb-0 h2 pe-4 pb-4">{{ product.name|title }}</h1>
+              <div class="bg-light">
+                <div class="bg-light">
+                  <img class="img-fluid mx-auto d-block" width="250px" alt="Responsive image" src="{{ product.image.url }}"> 
+                </div>          
+              </div>     
+            </div>
+          </div>    
+        </div>
+      </div>
+      <div class ="text-center">
+        {{ product.description|slice:":250" }}
+      </div>
+    </div>
+  </div>
+  <div class='col-md-12 col-lg-12 p-4 my-5'>
+    <h2 class=" text-center">Related items</h2>
+      <div class = 'invoices-row' >
+        {% for item in related_products %}
+            <div class=" text-center my-4">
+              <a href="{% url 'store:product_detail' item.slug %}" class = "custom-link">
+                <div>
+                  <img src="{{ item.image.url }}" class="img-fluid mx-auto d-block" width="150px" alt="Responsive image">
+                </div>
+                <p>{{ item.name|title }}</p>
+                <p class="text-muted">Price €: {{ item.sell_price }}</p>
+              </a>
+            </div>
+        {% endfor %}
+      </div>
+  </div>
+</div>
+
+<script>
+//Esta función se ejecuta cuando se hace clic en un elemento con el ID add-button (probablemente un botón de agregar a la cesta). 
+//Realiza una solicitud AJAX para agregar un producto al carrito de compras sin recargar la página.
+//Envia los siguientes datos en la solicitud:
+//productid: El valor asociado al  botón con el ID add-button.
+//productqty: La cantidad de productos
+//csrfmiddlewaretoken: El token de protección CSRF necesario para la seguridad.
+//action: Un marcador para indicar que la acción es un POST.
+//Si la solicitud se realiza correctamente, actualiza la cantidad de productos en el carrito (basket-qty) en la interfaz del usuario sin recargar la página.
+
+  $(document).on('click', '#add-button', function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: '{% url "basket:basket_add" %}',
+      data: {
+        productid: $('#add-button').val(),
+        productqty: $('#quantity').val(),
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: 'post'
+      },
+      success: function (json) {
+        document.getElementById("basket-qty").innerHTML = json.qty
+      },
+      error: function (xhr, errmsg, err) {}
+    });
+  })
+</script> 
+
+{% endblock %}

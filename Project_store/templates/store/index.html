@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Store - Computer supplies{% endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="container">
+    <div class="row">
+      <div class="album py-5">
+        <div class="pb-3">
+          <h1 class="h3 text-center">Items</h1>
+        </div>
+        {% if not products %}
+        <div class="col-12">There are currently no items active</div>
+        {% else %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 my-2">
+          {% for product in products %}
+          <div class="col">
+            <div class="card border-0">
+              <img class="img-fluid" alt="Responsive image" src="{{ product.image.url }}">
+              <div class="card-body px-0">
+                <p class="card-text">
+                  <a class="custom-link text-decoration-none"
+                    href="{{ product.get_absolute_url }}">{{ product.name|title|slice:":50" }}...</a>
+                </p>
+                <div class="fw-bold">€{{product.sell_price}}</div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}

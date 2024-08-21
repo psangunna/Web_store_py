@@ -1,0 +1,39 @@
+{% extends "./sub_base.html" %}
+{% load static %}
+{% block title %}Make Payment{% endblock %}
+{% load crispy_forms_tags %}
+{% block sub_content %}
+
+<form class="payment-form" id="payment-form">
+  <h3 class="mb-3">Billing address</h3>
+  <!-- Error messages in this element -->
+  <div id="card-errors" class="a" role="alert"></div>
+  {% csrf_token %}
+  {{form.full_name|as_crispy_field}}
+  {{form.email|as_crispy_field}}
+  {{form.contact_no|as_crispy_field}}
+  {{form.address1|as_crispy_field}}
+  {{form.address2|as_crispy_field}}
+  <div class="invoices-row">
+    {{form.country|as_crispy_field}}
+    {{form.city|as_crispy_field}}
+    {{form.post_code|as_crispy_field}}
+  </div>
+  <hr class="my-4">
+  <h4 class="mb-3">Payment</h4>
+  <label for="card-element">Credit or debit card</label>
+  <div id="card-element" class="form-control form-control-payment">
+    <!-- Payment elements will appear here -->
+  </div>
+  <hr class="my-4">
+  <button id="submit" class="btn btn-info w-100 fw-bold text-white" data-secret="{{ client_secret }}">Pay</button>
+</form>
+
+<script>
+  var STRIPE_PUBLISHABLE_KEY = '{{STRIPE_PUBLISHABLE_KEY}}'
+  var CSRF_TOKEN = '{{ csrf_token }}';
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'payment/index.js' %}" data-rel-js></script>
+
+{% endblock %}

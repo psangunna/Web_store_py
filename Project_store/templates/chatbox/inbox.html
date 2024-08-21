@@ -1,0 +1,56 @@
+{% extends './sub_base.html' %}
+{% load static %}
+{% block title %}Messages Page{% endblock %}
+
+{% block sub_content %}
+    <h1 class="h2">Your Messages</h1>
+    <div class="col-12 d-flex justify-content-between">
+        <div>Manage your <b>send messages</b></div>
+    </div>
+    <hr>
+    {% if conversations|length == 0 %}
+    <div class="col-12">There are no messages sent
+    </div>
+    {% endif %}
+    <div class= "row g-3">
+        {% for conversation in conversations %}
+            <div class="col-12 bg-light p-1 d-flex justify-content-between fw-bold">
+                <p>{{ conversation.order.ref_no }}
+                {% if not conversation.order.billing_status %}
+                  <small class="text-muted">(Unpaid order)</small>
+                {% endif %}
+                </p>
+            </div>
+            <a class="custom-link" href="{% url 'chatbox:detail' conversation.id %}">
+            
+                <div class="col-12 bg-light p-3 d-flex justify-content-between">
+                    
+                    <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
+                        <div class="d-grid gap-2 ">
+                            {% for member in conversation.members.all %}
+                            
+                            {% if member != request.user %}
+                            {% if forloop.first %}
+                                <p class="mb-4"><strong>{{ member }}</strong> | {{ conversation.modified_at }}</p>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-7 col-lg-8 p-0">
+                        
+                        {% for item in conversation.order.items.all %}
+                            <div class="card mb-3 border-0">
+                                <img class="img-fluid" style="width:90px" src="{{item.product.image.url}}" class="w-20 rounded-xl">
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                
+
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

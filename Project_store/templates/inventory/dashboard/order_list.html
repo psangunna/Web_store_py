@@ -1,0 +1,57 @@
+{% extends '../topside.html' %}
+{% block title %}Orders Page{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="card card-body row my-4">
+    <div class="card col-md-12" style = "align-items:center;text-align: center;"> 
+        <a href="{% url 'inventory:create_order'%}" type="button"   class="add-button text-decoration-none small">Create order</a>
+    </div>
+    <br>
+    <div class="col-md-12">
+        <table class="table bg-white">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col">Order nº</th>
+                    <th scope="col">Order by</th>
+                    <th scope="col">Contact nº</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Paid at</th>
+                    <th scope="col">Total paid (€)</th>
+                    <th scope="col">Paid</th>
+                    <th scope="col">Saved</th>                        
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in order %}
+                <tr>
+                    <td>
+                        <p class="card-text ">
+                            <a class="custom-link" href="{% url 'inventory:update_order' order.id %}">
+                            {% if order.saved_later %} 
+                                PROV-{{ order.id }}
+                            {% else %} 
+                                {{ order.ref_no }}
+                            {% endif %} 
+                            </a>
+                        </p>
+                    </td>
+                    <td>{{ order.user|slice:":10"|title }}</td>
+                    <td>{{ order.contact_no}}</td>
+                    <td>{{ order.city }}</td>
+                    <td>{{ order.billing_date|date:"Y-m-d"  }}</td>
+                    <td>{{ order.total_paid }}</td>
+                    <td>
+                        <input type="checkbox" {% if order.billing_status %} checked {% endif %} class= "no-events-field" >
+                    </td>
+                    <td>
+                        <input type="checkbox" {% if order.saved_later %} checked {% endif %} class= "no-events-field" >
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

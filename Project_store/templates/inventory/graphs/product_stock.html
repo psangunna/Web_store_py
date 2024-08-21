@@ -1,0 +1,36 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}Products Stock Page{% endblock %}
+
+{% block content %}
+<!--Se incluye la biblioteca Plotly desde un CDN. Plotly es una biblioteca de gráficos interactivos, 
+y este script proporciona las funciones necesarias para crear gráficos en la página.-->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div class="my-3">
+    <h3 class ="h2">Products In Stock </h3>
+    <div>The graph shows the percentage of stock <small>(with respect to the total number of existing products)</small> of each product in the store.
+        <a class="custom-link" href="{% url 'graphs:dashboard_graphs' %}">Back to Graphs Dashboard</a>
+    </div>
+    <hr>
+    <div class="col-md-10 my-4">
+        <div class="bg-white" >
+           
+            <div class="card-body">
+                <div id = "chart"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+ 
+    var graph3 = JSON.parse('{{ most_product_in_stock|safe }}');
+    //Se utiliza la biblioteca Plotly para crear un nuevo gráfico 
+    //en el contenedor con el ID chart utilizando los datos proporcionados en graph3.
+    Plotly.newPlot('chart', graph3);
+    
+</script>
+{%endblock%}

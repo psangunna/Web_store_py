@@ -1,0 +1,134 @@
+{% load static %}
+{% block additionalStyles %}
+<link rel="stylesheet" href="{% static 'inventory/css/inventory.css' %}"/>
+{% endblock %}
+<!doctype html>
+<html lang="en">    
+ 
+<head> 
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--FontAwesome CDN-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+        integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+    <!--Chartjs CDN-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    <!--Custome CSS-->
+    <link rel="stylesheet" href="{% static 'inventory/css/inventory.css' %}">
+    <!--Nav-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'basket/css/basket.css' %}">
+    
+    <title>{% block title %}Store Management{% endblock %}</title>
+</head>
+
+<body>
+    <nav  class="navbar navbar-expand-lg navbar-info bg-info ">
+        <div class="container-fluid px-md-4">
+            <div class="d-flex w-100 navbar-collapse">
+                <a class="navbar-brand d-flex-inline" href="{% url 'inventory:inventory' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                        <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                    </svg>
+                    <span class="fs15 fw500">Store Management</span>
+                </a>
+
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                </ul>
+                <a type="button" role="button" href="{% url 'account:dashboard' %}"
+                    class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black"
+                        class="bi bi-person" viewBox="0 0 16 16">
+                            <path
+                            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">                    
+                   
+                    {{ request.user.user_name|title}}
+                   
+                    </span>
+                </a>
+                {% if user.is_superuser %}
+                <a type="button" role="button" href="{% url 'chatbox:admin_inbox' %}"
+                    class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="black" class="bi bi-envelope-paper" viewBox="0 0 16 16">
+                            <path d="M4 0a2 2 0 0 0-2 2v1.133l-.941.502A2 2 0 0 0 0 5.4V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5.4a2 2 0 0 0-1.059-1.765L14 3.133V2a2 2 0 0 0-2-2zm10 4.267.47.25A1 1 0 0 1 15 5.4v.817l-1 .6zm-1 3.15-3.75 2.25L8 8.917l-1.25.75L3 7.417V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1zm-11-.6-1-.6V5.4a1 1 0 0 1 .53-.882L2 4.267zm13 .566v5.734l-4.778-2.867zm-.035 6.88A1 1 0 0 1 14 15H2a1 1 0 0 1-.965-.738L8 10.083zM1 13.116V7.383l4.778 2.867L1 13.117Z"/>
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">Inbox</span>
+                </a>
+                {% endif %}
+                <a type="button" role="button" href="{% url 'account:logout' %}"
+                    class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="black"
+                            class="bi bi-door-closed" viewBox="0 0 16 16">
+                            <path
+                                d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                            <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">Logout</span>
+                </a>
+                <a type="button" role="button" href="/"
+                    class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="black" class="bi bi-crop" viewBox="0 0 16 16">
+                            <path d="M3.5.5A.5.5 0 0 1 4 1v13h13a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2H3.5a.5.5 0 0 1-.5-.5V4H1a.5.5 0 0 1 0-1h2V1a.5.5 0 0 1 .5-.5zm2.5 3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4H6.5a.5.5 0 0 1-.5-.5z"/>
+                          </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">ComputeNest</span>
+                </a>
+            </div>
+            <!--form class="d-flex w-100 d-md-none">
+                <input class="form-control me-2" type="search" placeholder="Search products or FAQ"
+                    aria-label="Search">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </!--form!-->
+        </div>
+    </nav>
+
+
+
+
+    <div class="container">
+      <div id="sidebar">
+        {% block sidebar %}
+        {% endblock %}
+      </div>
+
+      <div id="content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>

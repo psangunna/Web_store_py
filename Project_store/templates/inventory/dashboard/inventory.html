@@ -1,0 +1,84 @@
+{% extends '../topside.html' %}
+{% block title %}Inventory Page{% endblock %}
+ 
+{% block content %}
+<div class="row my-4">
+    <div class="alert alert-danger" role="alert" id="notification" style="display: none;">
+        <strong><p style = "font-family: Garamond; color:rgba(0, 0, 0, 0.819); text-align: center;" id="notification-message"></p></strong>
+    </div>
+    <div class="card card-body col-md-4">
+            <table class="table bg-white">
+                <thead class="bg-info text-white">
+                    <tr>
+                        <th title = "Product name">Name</th>
+                        <th title = "Quantity stock">Q. Stock</th>
+                        <th title = "Quantity sold">Q. Sold</th>
+                        <th title = "Sell cost">Sell (€)</th>
+                        <th title = "Buy cost">Buy (€)</th>
+                        <th title = "Sales/Revenues">Sal./Rev.</th>
+                        <th title = "Last sale at">Lst.Sale at</th>
+                        <th title = "Maximum stock">Mx.Stock</th>
+                        <th title = "Updated stock at">Upd.Stock at</th> 
+                        <th title = "Check stock">Check Stock</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% if inventory_data|length != 0 %}
+                    {% for data in inventory_data %}
+                    <tr>
+                      <td>{{ data.product|slice:":25"|title  }}</td>
+                      <td>{{ data.stock }}</td>
+                      <td>{{ data.sold }}</td>
+                      <td>{{ data.cost_per_item }}</td>
+                      <td>{{ data.buy_cost }}</td>
+                      <td>{{ data.sales }}</td>
+                      <td>{{ data.last_sales_date|date:"Y-m-d"  }}</td>
+                      <td>{{ data.stock_max }}</td>
+                      <td>{{ data.updated_stock_at|date:"Y-m-d" }}</td>
+                      <td>
+                        <input type="checkbox" {% if data.check_stock %} checked {% endif %} class="no-events-field">
+                    </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var productIds = JSON.parse('{{ product_ids_json|safe }}');
+        var productIdsString = productIds.join(',');
+        console.log('productIdsString', productIdsString)
+
+        function checkStockNotifications() {
+            var url = 'http://127.0.0.1:8000/inventory/check_stock_notification/?product_ids=' + productIdsString;
+            // Debugging statement
+            console.log('Fetching:', url);
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.messages.length > 0) {
+                        var message = data.messages.join('<br>');
+                        document.getElementById('notification-message').innerHTML = message;
+                        document.getElementById('notification').style.display = 'block';
+
+                        setTimeout(function() {
+                            document.getElementById('notification').style.display = 'none';
+                        }, 5000);
+                    } else {
+                        document.getElementById('notification').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Call the function every 3 minutes
+        setInterval(checkStockNotifications, 180000);
+
+        // Call the function initially to check for notifications
+        checkStockNotifications();
+    });
+</script>
+{% endblock %}

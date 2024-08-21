@@ -1,0 +1,100 @@
+{% extends '../base.html' %}
+{% block title %}
+{% if supplier %}Update{% else %}Create{% endif %} Supplier
+{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class = "row my-3">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <h1  class="h2">
+        {% if supplier %}Update {% else %}Create{% endif %} Supplier 
+    </h1> 
+    <form class="inventory-form" method="post">
+        <div class="card card-body">
+            <div class= "form-group col-md-12 mb-0">
+                {% csrf_token %}
+                <div class="invoices-row">
+                    <div class="form-group col-md-12 mb-0">
+                        {% if form.instance.pk %}
+                            {{ form.ref_no|as_crispy_field}}
+                        {% else %}
+                        <div class="form-gcus">
+                            <label for="id_inv_no">{{ form.Ref_no.label }}</label>
+                            <input type="text" name="id_inv_no" value='{{sup_number}}'  class="px-2 rounded border textinput form-control" maxlength="15" readonly="" id="id_inv_no">
+                           
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="invoices-row">
+                    <div class="form-group col-md-12 mb-0">
+                        {{ form.name|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="invoices-row">
+                    <div class="form-group col-md-12 mb-0">
+                        {{ form.address|as_crispy_field }}
+                    </div>
+                </div>
+
+                <div class="invoices-row">
+                    <div class="form-group col-md-5 mb-0">
+                        {{ form.email|as_crispy_field }}
+                    </div>
+        
+                    <div class="form-group col-md-5 mb-0">
+                        {{ form.contact_no|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="invoices-row">
+                    <div  class="form-group col-md-12 mb-0">
+                        {{ form.description|as_crispy_field }}
+                    </div>
+                </div>
+                <div class = "invoices-row">
+                    <div  class="form-group col-md-12 mb-0">
+                        {{ form.is_active|as_crispy_field }}
+                    </div>
+                </div>
+
+
+            </div>
+            {% if supplier %}
+            <div class="col-md-12 mb-0 my-4">
+                <h5 >Other details</h5>
+                <hr>
+                <div class="orders-row my-2">
+                    <div class="form-group col-md-4 mb-0">
+                        <label for="update">Created by</label><br>
+                        <input  name="update" class="w-100 rounded border" value="{{supplier.created_by}}" readonly>
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        <label for="update">Created at</label><br>
+                        <input  name="update" class="w-100 rounded border" value="{{supplier.created_at}}" readonly>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <button class="btn_save btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit" value="Save changes">
+            Save
+        </button>
+        <a href="{% url 'inventory:suppliers' %}" role="button" class="btn btn-secondary w-100">Cancel</a>
+    </form>
+    {% if supplier %}
+    <form class="inventory-form" action="{% url 'inventory:delete_supplier' supplier.id %}" method="post">
+        {% csrf_token %}
+        <p class=" h3 pt-4 font-weight-bold">Delete Supplier</p>
+        <p>Are you sure you want to delete the supplier ?</p>
+        <button type="submit" role="button" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100">Delete</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

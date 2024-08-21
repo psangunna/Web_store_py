@@ -1,0 +1,12 @@
+{% extends "./sub_base.html" %}
+{% block title %}Order Placed{% endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="col-12 col-lg-6">
+    <h3 class="mb-4">Order has been placed</h3>
+    <a class="custom-link" href="{% url 'account:user_orders' %}">See orders</a>
+  </div>     
+</div>
+
+{% endblock %}

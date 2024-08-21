@@ -1,0 +1,39 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}Product Performing Page{% endblock %}
+
+{% block content %}
+<!--Se incluye la biblioteca Plotly desde un CDN. Plotly es una biblioteca de gráficos interactivos, 
+y este script proporciona las funciones necesarias para crear gráficos en la página.-->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div class="my-3">
+<h3 class ="h2">Performing Product </h3>
+<div>
+    The graph shows the quantity of each product sold. You can see the products with the best performance.
+    <a class="custom-link" href="{% url 'graphs:dashboard_graphs' %}">Back to Graphs Dashboard</a>
+</div>
+<hr>
+    <div class="col-md-10 my-4">
+        <div class="bg-white">
+           
+            <div class="card-body">
+                <div id = "chart">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+
+    var graph2 = JSON.parse('{{ best_performing_product|safe }}');
+    //Se utiliza la biblioteca Plotly para crear un nuevo gráfico 
+    //en el contenedor con el ID chart utilizando los datos proporcionados en graph2.
+    Plotly.newPlot('chart', graph2);
+    
+</script>
+{%endblock%}

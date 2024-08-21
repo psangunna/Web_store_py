@@ -1,0 +1,42 @@
+{% extends "../sub_base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Edit Addresses{% endblock %}
+
+
+{% block sub_content %}
+<div class="col-10 mx-auto">
+  <h1 class="h3">Create/Edit Address</h1>
+  <div>Add a new delivery <b>address</b> and delivery preferences</div>
+  <hr>
+  <form name="address_form" class="account-form" method="post" enctype="multipart/form-data">
+    {% if form.errors %}
+    <div class="alert alert-primary" role="alert">
+        Error: Please try again!
+    </div> 
+    {% endif %}
+
+    {% csrf_token %}
+    <p >{{ form.full_name|as_crispy_field }}</p>
+    <p >{{ form.phone|as_crispy_field }}</p>
+    <p >{{ form.email|as_crispy_field}}</p>
+    <p >{{ form.address_line|as_crispy_field }}</p>
+    <p >{{ form.address_line2|as_crispy_field }}</p>
+    <p >{{ form.town|as_crispy_field }}</p>
+    <p >{{ form.country|as_crispy_field}}</p>
+    <p >{{ form.postcode|as_crispy_field }}</p>
+    <button class="btn btn-info btn-block py-2 mb-4 mt-4 fw-bold text-white w-100" type="button" value="Submit" onclick="submitForm()">
+    Add Address
+    </button>
+  </form>
+
+</div>
+
+<script> 
+function submitForm() {
+   var form = document.getElementsByName('address_form')[0];
+   form.submit(); // Submit the form
+   form.reset();  // Reset all form data
+   return false; // Prevent page refresh
+}
+</script>
+{% endblock %}

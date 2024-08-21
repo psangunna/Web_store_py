@@ -1,0 +1,83 @@
+{% extends './base.html' %}
+{% block title %}Admin Custom{% endblock %}
+{% block sidebar %}
+    <div class="row" >
+        <div class="col-md-12 mt-2">
+            <div class="card">
+                <div class="card-header bg-info text-dark">
+                    Dashboard 
+                </div>
+                
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 top-30 start-30 ">
+                            <a class="text-decoration-none text-dark" href="{% url 'graphs:dashboard_graphs' %}">
+                                <div class="card my-card shadow">
+                                    <div class="card-body text-center">
+                                        <h6>Graphs</i></h5>
+                                        <h5><i class="fas fa-chart-bar"></i></h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 top-30 start-30 ">
+                            <a class="text-decoration-none text-dark" href="{% url 'inventory:orders' %}">
+                                <div class="card my-card shadow">
+                                    <div class="card-body text-center">
+                                        <h6>Orders <i class="fas fa-users"></i></h6>
+                                        <h5>{{ order_count }}</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 top-30 start-30 ">
+                            <a class="text-decoration-none text-dark" href="{% url 'inventory:accounts' %}">
+                                <div class="card my-card shadow">
+                                    <div class="card-body text-center">
+                                        <h6>Accounts <i class="fas fa-box"></i></h6>
+                                        <h5>{{ account_count }}</h5>
+                                       
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3  top-30 start-30 ">
+                            <a class="text-decoration-none text-dark" href="{% url 'inventory:products' %}">
+                                <div class="card my-card shadow">
+                                    <div class="card-body text-center">
+                                        <h6>Products<i class="fas fa-shipping-fast"></i></h6>
+                                        <h5>{{ product_count }}</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 top-30 start-30 ">
+                            <a class="text-decoration-none text-dark" href="{% url 'inventory:suppliers' %}">
+                                <div class="card my-card shadow">
+                                    <div class="card-body text-center">
+                                        <h6>Suppliers<i class="fas fa-users"></i></h6>
+                                        <h5>{{ supplier_count }}</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <br>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}

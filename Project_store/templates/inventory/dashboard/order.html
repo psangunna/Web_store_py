@@ -1,0 +1,521 @@
+{% extends '../base.html' %}
+{% block title %}
+{% if order.billing_status %}
+    View Order
+{% else %}
+{% if form.instance.pk %}Update{% else %}Create{% endif %} Order
+{% endif %}
+{% endblock %}
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+<div class = "my-3">
+    {% if form.instance.pk %}
+        {% if order.billing_status %}
+        <h1 class="h2">View Order</h1>
+        {% else %}
+        <h1 class="h2">Update Order
+            {% if order.saved_later %}
+            <small class ="text-muted h4">(Saved order for later)</small>
+            {% endif %}
+        </h1>
+        {% endif %}
+    {% else %}
+    <h1 class="h2">Create Order</h1>
+    {% endif %}
+    
+    <form class="inventory-form"  id="formContainer" method="post">
+        {% csrf_token %}
+        <div class = "card card-body col-md-12 mb-0 my-3" >
+            {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+            <br>
+            {% endfor %}
+            {% endif %}
+            <div id = "Div1">
+                <div class="invoices-row">
+                    <div class="form-group col-md-5 mb-0 field-readonly">
+                        {% if form.instance.pk %}
+                            {% if order.saved_later %}
+                            <div class="form-gcus">
+                                <label for="id_inv_no">{{ form.ref_no.label }}</label>
+                                <input type="text" name="id_inv_no" value=' PROV-{{ order.id }}'  class="px-2 rounded border textinput form-control" maxlength="15" readonly="" id="id_inv_no">
+                            </div>
+                            {% else %}
+                             {{ form.ref_no |as_crispy_field}}
+                            {% endif %}
+                        {% else %}
+                        <div class="form-gcus">
+                            <label for="id_inv_no">{{ form.ref_no.label }}</label>
+                            <input type="text" name="id_inv_no" value='{{order_number}}'  class="px-2 rounded border textinput form-control" maxlength="15" readonly="" id="id_inv_no">
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-5 mb-0 {% if  no_editable  %}no-events-field{% endif %}">
+                        {{ form.user|as_crispy_field }}
+                    </div>
+
+                </div>
+                <div class="form-group col-md-12 mb-0 my-2 {% if  no_editable  %}no-events-field{% endif %}">
+                    {{ form.full_name|as_crispy_field }}
+                </div>
+                                                           
+                <div class="form-group col-md-12 mb-0 my-2 {% if  no_editable  %}no-events-field{% endif %}">
+                    {{ form.address1|as_crispy_field }}
+                </div>
+                
+                <div class="form-group col-md-12 mb-0 my-2 {% if  no_editable  %}no-events-field{% endif %}">
+                        {{ form.address2|as_crispy_field }}
+                </div>
+                <div class="invoices-row my-2">
+                    <div class="form-group col-md-5 mb-0 {% if  no_editable  %}no-events-field{% endif %}">
+                        {{ form.email|as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-5 mb-0 {% if  no_editable  %}no-events-field{% endif %}">
+                        {{ form.contact_no|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="invoices-row my-2 {% if  no_editable  %}no-events-field{% endif %}">
+                    <div class="form-group col-md-3 mb-0">
+                        {{ form.city|as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-3 mb-0 {% if  no_editable  %}no-events-field{% endif %}">
+                        {{ form.country|as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-3 mb-0 {% if  no_editable  %}no-events-field{% endif %}">
+                        {{ form.post_code|as_crispy_field }}
+                    </div>
+
+                </div>      
+            </div> 
+            <div class="form-group col-md-12 mb-0 my-2 {% if  no_editable  %}no-events-field{% endif %}" >
+                {{ form.billing_status|as_crispy_field }}
+            </div> 
+    
+        </div>
+        <div class="card card-body my-2">
+            <h3>Items</h3>
+            <hr>
+            {{ formset.management_form }}
+            <div id = "Div2">
+                <div id="formContainerPos">
+                        {% for form in formset %}
+                        {% if forloop.first %}
+                        <div class="invoices-row">
+                            <div class=" form-group col-md-3 " style ="padding-left:20px ;">{{form.product.label}}</div>
+                            <div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.price.label}}</div>
+                            <div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.quantity.label}}</div>
+                            <div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.amount.label}}</div>
+                            <!--div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.amount.name|capfirst}}</!--div-->
+                            {% if order %}
+                            <div class=" form-group col-md-1 ">Delete</div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                    
+                    <div class="formOrder">
+
+                        <div class="invoices-row">
+                            <div class="form-group card col-md-3 " >
+                                {{form.product}}
+                                {% for error in form.product.errors %}
+                                <small style="text-align:center; color: #E01F05"><strong>{{error}}</strong> </small>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group card col-md-2">
+                                {{form.price}}
+                                {% for error in form.price.errors %}
+                                <small style="text-align:center; color: #E01F05"><strong>{{error}}</strong> </small>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-group card col-md-2">
+                                {{form.quantity}}
+                                {% for error in form.quantity.errors %}
+                                <small style="text-align:center; color: #E01F05"><strong>{{error}}</strong> </small>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group card col-md-2">
+                                {{form.amount}}
+                            </div>
+                            {% if order %}
+                            <div class="form-group col-md-1 " style = "align-self: center;">{{form.DELETE}}</div>
+                            {% endif %}
+                        </div>
+                                                        
+                        {% for field in form.visible_fields %}
+                            <div>
+                                {#Include the hidden fields in the form #}
+                                {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                {% endfor %}
+                </div>
+                <div class= "col-md-12 mb-0 my-3">
+                    <table style="width:100% ;"  >
+                        <tr class= "col-md-12 mb-0 my-3" > 
+                            <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px ">Subtotal €</td>
+                            <td  class= "col-md-3 mb-0 my-3">
+                                <input type="text" value="0.00" class="w-50 rounded border px-2" id = 'subtotal' readonly>
+                            </td>
+                        </tr>
+                        <tr class= "col-md-12 mb-0 my-3">
+                            <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px ;">{{ form.shipping.label}}</td>
+                            <td id = 'shipping' class= "col-md-3 mb-0 my-3">{{ form.shipping }}</td>
+                        </tr>
+                        <tr>
+                            <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px">{{ form.total_paid.label}}</td>
+                            <td id="total-paid-container" class= "col-md-3 mb-0 my-3 field-readonly">{{ form.total_paid }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+            <div class="card col-md-12 my-2" style = "align-items:center;text-align: center;"> 
+                <a type="button" id="add-more" data-index="#"  class="add-button text-decoration-none small {% if  no_editable  %}no-events-field{% endif %}" > Add line </a>     
+            </div>
+            <div class="col-md-12 mb-0 my-3">
+                {% if order %}
+                <h5>Other details</h5>
+                <hr>
+                <div class="orders-row my-2">
+                    <div class="form-group col-md-4 mb-0 field-readonly">
+                        {{form.order_key|as_crispy_field}}
+                        
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        <label for="update">Updated at</label><br>
+                        <input  name="update" class="w-100 rounded border" value="{{order.updated}}" readonly>
+                    </div>
+                </div>
+                <div class="orders-row my-2">
+                    <div class="form-group col-md-4 mb-0">
+                        <label for="update">Created at</label><br>
+                        <input  name="update" class="w-100 rounded border"  value="{{order.created}}" readonly>
+                    </div>
+                  
+                    <div class="form-group col-md-4 mb-0">
+                        {% if order.billing_status %}
+                        <label for="update">Billing at</label><br>
+                        <input  name="update" class="w-100 rounded border"  value="{{order.billing_date}}" readonly>
+                        {% endif %}
+                    </div>
+                   
+                </div>
+
+                {% endif %}
+            </div>  
+    
+        </div>
+        {% if not no_editable %}
+        <button class="btn_save btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit" value="Save changes">
+            Save
+        </button>
+        {% endif %}
+        <a href="{% url 'inventory:orders' %}" role="button" class="btn btn-secondary w-100">
+        {% if no_editable  %}
+            Go back
+        {% else %}
+            Cancel
+        {% endif %}
+        </a>
+
+
+    </form>
+    {% if form.instance.pk and  not no_editable  %}
+        <form class="inventory-form"  action="{% url 'inventory:delete_order' form.instance.pk %}" method="post">
+            {% csrf_token %}
+            <p class=" h3 pt-4 font-weight-bold">Delete Order</p>
+            <p>Are you sure you want to delete the order?</p>
+            <button type="submit" role="button" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100">Delete</button>
+        </form>
+    {% endif %}
+
+</div>
+<div class="hidden">
+    <div class = "" id = "empty_form">
+        <div class="invoices-row ">
+            <div class="form-group card col-md-3" >{{formset.empty_form.product}}</div>
+            <div class="form-group card col-md-2">{{formset.empty_form.price}}</div>
+            <div class="form-group card col-md-2">{{formset.empty_form.quantity}}</div>
+            <div class="form-group card col-md-2" style = "align-self: center;">{{formset.empty_form.amount}}</div>
+            {% if order %}
+            <div class="form-group col-md-1 " style = "align-self: center;">{{formset.empty_form.DELETE}}</div>
+            {% endif %}
+        </div>
+    </div>
+</div >
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    //Fun.actualiza el precio del producto en el formulario.Recibe como parámetro el formulario (form) y realiza una serie de operaciones para obtener
+    //el precio del producto seleccionado. Utiliza la función fetch para hacer una solicitud al servidor y obtener el precio mediante la URL proporcionada.
+    // Luego, actualiza el campo de precio en el formulario y llama a dos funciones adicionales: calculateAmount() y updateTotalPaid().
+    function update_price(form) {
+        
+        const productSelect = form.querySelector(".select_product");
+        const priceInput = form.querySelector(".update_price");
+        const quantityInput = form.querySelector(".update_price");
+
+        const product_id = productSelect.value;
+        
+
+        fetch("{% url 'inventory:get_product_price' 0 %}".replace('0', product_id))
+            .then(response => response.json())
+            .then(data => {
+                priceInput.value = data.price;
+                calculateAmount();
+                updateTotalPaid();
+                
+            })
+            .catch(error => console.error('Error:', error));
+
+
+    }
+
+    // Add event listener to update the price for each form when the product is selected
+    const forms = document.querySelectorAll(".formOrder");
+    forms.forEach(function(form) {
+        form.querySelector(".select_product").addEventListener("change", function() {
+            update_price(form);
+        });
+    });
+ 
+    //Fun. Calcula el monto total para cada línea del formulario multiplicando la cantidad por el precio.
+    // Luego, actualiza el campo de "amount" en el formulario para reflejar este cálculo.
+    function calculateAmount() {
+        const forms = document.querySelectorAll("#formContainer .formOrder");
+
+        forms.forEach(function(form) {
+            const quantityInput = form.querySelector("[id$='-quantity']");
+            const priceInput = form.querySelector("[id$='-price']");
+            const amountInput = form.querySelector("[id$='-amount']");
+
+            const quantity = parseInt(quantityInput.value) || 0;
+            const price = parseInt(priceInput.value) || 0;
+            const amount = quantity * price;
+            amountInput.value = amount.toFixed(2);
+        });
+    }
+
+    // Add an event listener to recalculate the amount on keyup for quantity or price
+    const formContainerPos = document.getElementById("formContainerPos");
+    formContainerPos.addEventListener("keyup", calculateAmount);
+       
+
+    // Fun. Calcula el importe total de todas las líneas del formulario, 
+    //incluyendo el envío, y actualiza los campos de "subtotal" y "total"
+    // en el formulario. También establece el valor de un campo oculto (id_total_paid) con el total calculado.
+    function updateTotalPaid() {
+        const totalForms = document.getElementById('id_total_paid')
+        const shippingForms = document.getElementById('id_shipping')
+        
+
+        const shipping = parseFloat(document.getElementById('id_shipping').value) || 0;
+        let total = 0
+        const amountInputs = document.querySelectorAll("[id$='-amount']");
+
+        amountInputs.forEach(function(input) {
+            const amount = parseInt(input.value) || 0;
+            total += amount;
+        });
+
+        const subtotal = total
+        // Update the subtotal field
+        document.getElementById('subtotal').value = subtotal.toFixed(2);
+        
+        // Calculate total and update the total field
+         total = total + shipping
+         total = total.toFixed(2)
+        //set the value in the form
+        totalForms.setAttribute('value', total  )
+  
+
+          
+    } 
+
+    // llamado inicial al cargar la página
+    document.addEventListener("keyup", updateTotalPaid);
+    updateTotalPaid() 
+    
+    const totalNewForms = document.getElementById('id_items-TOTAL_FORMS')
+    const addMoreBtn = document.getElementById('add-more');
+    addMoreBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        add_new_form();
+    });
+
+    //Esta función se encarga de agregar una nueva línea al formulario cuando se hace clic en un botón con el id 'add-more'.
+    // Clona un formulario vacío y ajusta su ID y otros atributos necesarios.
+    function add_new_form() {
+        const currentIngredientForms = document.getElementsByClassName('formOrder')
+        const currentFormCount = currentIngredientForms.length
+        const formCopyTarget = document.getElementById("formContainerPos")
+        const copyEmptyFormEl = document.getElementById('empty_form').cloneNode(true)
+
+        copyEmptyFormEl.setAttribute('class', 'formOrder')
+        copyEmptyFormEl.setAttribute('id', `items-${currentFormCount}`)
+        const regex = new RegExp('__prefix__', 'g')
+        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount)
+        totalNewForms.setAttribute('value', currentFormCount + 1 )
+        
+
+        copyEmptyFormEl.addEventListener("keyup", updateTotalPaid);
+        copyEmptyFormEl.addEventListener("keyup", calculateAmount);
+        // Add the update_price function to the product select change event
+        const productSelect = copyEmptyFormEl.querySelector(".form-group.card.col-md-3 select");
+        productSelect.addEventListener("change", function() {
+            update_price(copyEmptyFormEl);
+        });
+        //now add empty form element to our html form
+        formCopyTarget.append(copyEmptyFormEl);
+
+    }
+
+    const isPaidCheckbox = document.getElementById('id_billing_status');
+    const addMoreButton = document.getElementById('add-more');
+
+    const elementCheckboxs = document.querySelectorAll('.formOrder input[type=checkbox]');
+    const myDiv1 = document.getElementById('Div1');
+    const myDiv2 = document.getElementById('Div2');
+    //Esta función controla el cambio en un checkbox con el id 'id_billing_status'. Dependiendo de si el checkbox está marcado o no,
+    // muestra u oculta un botón y deshabilita los elementos del formulario.
+    function handleCheckboxChange()  {
+        let total_aux = 0
+        total_aux = total_aux.toFixed(2)
+
+
+        if (isPaidCheckbox.checked) {
+
+            addMoreButton.style.display = 'none';
+            myDiv1.classList.add('no-events-field');
+            myDiv2.classList.add('no-events-field');
+            elementCheckboxs.forEach(function (element) {
+                element.checked = false;
+            });
+
+        } else {
+
+
+            addMoreButton.style.display = 'block';
+            myDiv1.classList.remove('no-events-field');
+            myDiv2.classList.remove('no-events-field');
+            elementCheckboxs.forEach(function (element) {
+                element.checked = false;
+            });
+
+                
+        }
+        
+            
+     }
+
+     
+    isPaidCheckbox.addEventListener('change', handleCheckboxChange) 
+        
+    
+   // llamado inicial al cargar la página
+    handleCheckboxChange();
+
+    //Esta función realiza una solicitud al servidor para obtener detalles de dirección basados en el ID del cliente seleccionado. 
+    //Luego, actualiza varios campos del formulario con la información obtenida.En caso de error, muestra un mensaje de advertencia.
+    function updateOrderForm() {
+        
+        const selectedCustomerId = document.getElementById('id_user');
+        const customer_id = selectedCustomerId.value;
+        
+
+        fetch("{% url 'inventory:get_address_details' 0 %}".replace('0', customer_id))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No associated address found for the user');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update the Order form fields with the fetched address details
+                document.getElementById('id_full_name').value = data.full_name;
+                document.getElementById('id_email').value = data.email;
+                document.getElementById('id_address1').value = data.address1;
+                document.getElementById('id_address2').value = data.address2;
+                document.getElementById('id_country').value = data.country;
+                document.getElementById('id_city').value = data.city;
+                document.getElementById('id_contact_no').value = data.contact_no;
+                document.getElementById('id_post_code').value = data.post_code;
+                
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                // Customize the warning message and style
+                const warningMessage =  error.message;
+                const customAlert = document.createElement('div');
+                customAlert.style.backgroundColor = '#ffcc00'; // Set your desired warning color
+                customAlert.style.padding = '10px';
+                customAlert.style.border = '1px solid #663300';
+                customAlert.style.borderRadius = '5px';
+                customAlert.style.color = '#663300';
+                customAlert.style.margin = '10px 0';
+                customAlert.innerHTML = warningMessage;
+          
+
+                const form = document.querySelector('form');
+                form.parentNode.insertBefore(customAlert, form);
+        
+            });            
+               
+    }
+
+    // Event listener for the customer dropdown change
+    document.getElementById('id_user').addEventListener('change', function () {
+      updateOrderForm(); // Call the function without passing the argument
+    });
+
+    // Se agregan este event listeners, al dar a submit el formulario se valida si hay una posicióm
+    //informada en el formulario en caso contratio se mostrará un mensaje de error y no permitirá guardar el form
+    document.querySelector('form').addEventListener('submit', function (event) {
+        let isFilled = false;
+        const selectElements = document.querySelectorAll('select[name$="-product"]');
+
+            // Check if at least one select field in the formset has a non-empty value
+        for (let i = 0; i < selectElements.length; i++) {
+            if (selectElements[i].value) {
+                isFilled = true;
+                break;  // exit the loop
+            }
+        }
+
+        if (!isFilled) {
+                // Customize the alert message and style
+                const customAlert = document.createElement('div');
+                customAlert.style.backgroundColor = '#ffcccb'; // Set your desired color
+                customAlert.style.padding = '10px';
+                customAlert.style.border = '1px solid #e00000';
+                customAlert.style.borderRadius = '5px';
+                customAlert.style.margin = '10px 0';
+                customAlert.style.color = '#e00000';
+                customAlert.innerHTML = 'Please fill out at least one line in the form.';
+
+                // Insert the custom alert above the form
+                const form = document.querySelector('form');
+                form.parentNode.insertBefore(customAlert, form);
+
+                event.preventDefault();  // prevent form submission
+            }
+    });
+           
+
+});
+</script>
+{% endblock %}
+

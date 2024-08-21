@@ -1,0 +1,47 @@
+{% extends '../topside.html' %}
+{% block title %}Invoices Page{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="card card-body row my-4">
+    <div class="card col-md-12" style = "align-items:center;text-align: center;"> 
+        <a href="{% url 'inventory:create_invoice'%}" type="button"   class="add-button text-decoration-none small">Create invoice</a>
+    </div>
+    <div class="col-md-12">
+        <table class="table bg-white">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col">Invoice nº</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Supplier</th>
+                    <th scope="col">Total (€)</th>
+                    <th scope="col">Paid total (€)</th>
+                    <th scope="col">Total to paid (€)</th>
+                    <th scope="col">Paid at</th>
+                    <th scope="col">Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for  invoice in  invoices %}
+                <tr>
+                    <td>
+                        <p class="card-text ">
+                            <a class="custom-link" href="{% url 'inventory:update_invoice' invoice.id  %}">{{ invoice.ref_no }}</a>
+                        </p>
+                    </td>
+                    <td>{{ invoice.inv_date|date:"Y-m-d"   }}</td>
+                    <td>{{ invoice.supplier|slice:":10"|title}}</td>
+                    <td>{{ invoice.total }}</td>
+                    <td>{{ invoice.total_paid }}</td>
+                    <td>{{ invoice.to_paid }}</td>
+                    <td>{{ invoice.paid_at|date:"Y-m-d" }}</td>
+                    <td>
+                        <input type="checkbox" {% if invoice.is_paid %} checked {% endif %} class="no-events-field">
+                    </td>
+                
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

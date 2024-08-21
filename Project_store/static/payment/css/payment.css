@@ -1,0 +1,18 @@
+.payment-form input {
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  height: calc(2em + .75rem + 2px);
+  padding-left: 10px;
+
+}
+
+  .payment-form input:focus {
+    border-color:  #1497ff;
+    box-shadow: none;
+  }
+
+
+  .payment-form input[type="text"] {
+      /* Customize the style of the checkbox */
+    width: 100%; /* Adjust the width as needed */
+  }

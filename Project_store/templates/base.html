@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Store{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+
+    <link rel="stylesheet" href="{% static 'basket/css/basket.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    {% block stylesheet %} {% endblock %}
+</head>
+<body> 
+  <header class="pb-3">
+    <nav  class="navbar navbar-expand-lg navbar-info bg-info">
+      <div class="container-fluid px-md-4">
+        <div class="d-flex w-100 navbar-collapse">
+            <a class="navbar-brand d-flex-inline" href="/">
+              <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="text-black" class="bi bi-crop" viewBox="0 0 16 16">
+                <path d="M3.5.5A.5.5 0 0 1 4 1v13h13a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2H3.5a.5.5 0 0 1-.5-.5V4H1a.5.5 0 0 1 0-1h2V1a.5.5 0 0 1 .5-.5zm2.5 3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4H6.5a.5.5 0 0 1-.5-.5z"/>
+              </svg>
+                <span class="fs15 fw500">ComputeNest</span>
+            </a>
+            <ul class="navbar-nav me-auto mb-2 mb-md-0 my-2">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-none d-md-block fw500v text-black" href="#" id="navbarDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                     All
+                  <i class="ps-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="text-black"
+                      class="bi bi-chevron-down" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                    </svg>
+                  </i>
+                </a>
+                <ul class="dropdown-menu rounded-0 border-0 " aria-labelledby="navbarDropdown">
+                  <li>
+                  <a class="dropdown-item " href="{% url 'store:store_home' %}">
+                      All
+                  </a>
+                  </li>
+                    {% for c in categories %}
+                  <li {% if category.slug == c.slug %}class="selected" {% endif %}>
+                    <a class="dropdown-item " style="align-items: center;" href="{{ c.get_absolute_url }}">
+                      {{ c.name|title }}
+                    </a>
+                  </li>
+                    {% endfor %}
+                </ul>
+              </li>
+
+            </ul>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+            aria-label="Toggle navigation">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="text-black" class="bi bi-shop-window" viewBox="0 0 16 16">
+                        <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zm2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                </div>
+                <span class="fs15 fw500 text-black">Store</span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+                <ul class="navbar-nav me-auto mb-3 mx-2 mb-lg-0">
+                  <form class="d-flex w-100 " method="get" action = "{% url 'store:products' %}">
+                    <input name = "query" class="form-control me-2"  type="text" value ="{{query}}" placeholder="Search products or FAQ">
+                    <button class="btn btn-outline-light border-white text-black">Search</button>
+                  </form>
+                </ul>
+                {% if user.is_authenticated %}
+                <a type="button" role="button" href="{% url 'account:dashboard' %}"
+                class="btn btn-outline-secondary border-0 basket-btn">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="text-black"
+                      class="bi bi-person" viewBox="0 0 16 16">
+                        <path
+                          d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                    </svg>
+                </div>
+                    <span class="fs15 fw500 text-black">                    
+                    
+                      {{ request.user.user_name|slice:":15"|title }}
+                   
+                    </span>
+                </a>
+                <a type="button" role="button" href="{% url 'account:user_orders' %}"
+                class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="text-black" class="bi bi-gift" viewBox="0 0 16 16">
+                            <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 14.5V7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43a.522.522 0 0 0 .023.07zM9 3h2.932a.56.56 0 0 0 .023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0V3zM1 4v2h6V4H1zm8 0v2h6V4H9zm5 3H9v8h4.5a.5.5 0 0 0 .5-.5V7zm-7 8V7H2v7.5a.5.5 0 0 0 .5.5H7z"/>
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">Orders</span>
+                </a>          
+    
+                <a type="button" role="button" href="{% url 'account:logout' %}"
+                  class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="text-black"
+                        class="bi bi-door-closed" viewBox="0 0 16 16">
+                            <path
+                              d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                            <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">Logout</span>
+                </a>
+                {% else %}
+                <a type="button" role="button" href="{% url 'account:login' %}" 
+                  class="btn btn-outline-secondary border-0 basket-btn">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="text-black"
+                          class="bi bi-door-closed" viewBox="0 0 16 16">
+                          <path
+                              d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                          <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">Login</span>
+                </a>
+                {% endif %}
+
+            </div>
+            <a type="button" role="button" href="{% url 'basket:basket_summary' %}"
+            class="btn btn-outline-secondary border-0 basket-btn">
+            {% with total_qty=basket|length %}
+            <div id="basket-qty" class="basket-qty">
+              {% if total_qty > 0 %}
+              {{ total_qty }}
+              {% else %}
+              0
+              {% endif %}
+            </div>
+            {% endwith %}
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="text-black" class="bi bi-cart3"
+                viewBox="0 0 16 16">
+                <path
+                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+              </svg>
+            </div>
+            <span class="fs15 fw500 text-black">Basket</span>
+            </a>
+        </div>
+        <div class="d-md-none d-lg-none d-xl-none">
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <button class="navbar-toggler border-0 text-black" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarAll" aria-controls="navbarCollapse" aria-expanded="false"
+            aria-label="Toggle navigation">
+                  All
+            </button>
+            <div class="d-md-none d-lg-none d-xl-none">
+                <div class="collapse navbar-collapse" id="navbarAll">
+                  <ul class="navbar-nav me-auto mb-2 mb-md-0" style = "padding-left: 12px;">
+                    <li>
+                      <a class="dropdown-item" href="{% url 'store:store_home' %}">
+                        All
+                      </a>
+                    </li>
+                    {% for c in categories %}
+                    <li {% if category.slug == c.slug %} class="selected" {% endif %}>
+                      <a class="dropdown-item" href="{{ c.get_absolute_url }}">{{ c.name|title }}</a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+            </div>
+
+              <ul class="list-group list-group-flush dropdown-account-link">
+                {% if user.is_authenticated %}
+                <a type="button" role="button" href="{% url 'account:dashboard' %}"
+                class="btn btn-outline-secondary border-0 basket-btn invoices-row">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="text-black"
+                      class="bi bi-person" viewBox="0 0 16 16">
+                        <path
+                          d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                    </svg>
+                </div>
+                <span class="fs15 fw500 text-black">                   
+                    <small>{{ request.user.user_name|slice:":8"|title }}</small>
+                </span>
+                </a>
+                <a type="button" role="button" href="{% url 'account:user_orders' %}"
+                class="btn btn-outline-secondary border-0 basket-btn invoices-row">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="text-black" class="bi bi-gift" viewBox="0 0 16 16">
+                            <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 14.5V7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43a.522.522 0 0 0 .023.07zM9 3h2.932a.56.56 0 0 0 .023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0V3zM1 4v2h6V4H1zm8 0v2h6V4H9zm5 3H9v8h4.5a.5.5 0 0 0 .5-.5V7zm-7 8V7H2v7.5a.5.5 0 0 0 .5.5H7z"/>
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black">
+                        <small>
+                            Orders
+                        </small>
+                    </span>
+                </a>     
+                <a type="button" role="button" href="{% url 'account:logout' %}"
+                class="btn btn-outline-secondary border-0 basket-btn invoices-row">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="text-black"
+                        class="bi bi-door-closed" viewBox="0 0 16 16">
+                            <path
+                              d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                            <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+                        </svg>
+                    </div>
+                    <span class="fs15 fw500 text-black"><small>Logout</small></span>
+                </a>    
+                {% else %}
+                <a type="button" role="button" href="{% url 'account:login' %}" 
+                class="btn btn-outline-secondary border-0 basket-btn invoices-row">
+                  <div >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="text-black"
+                        class="bi bi-door-closed" viewBox="0 0 16 16">
+                        <path
+                            d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                        <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+                      </svg>
+                  </div>
+                  <span class="fs15 fw500 text-black"><small>Login</small></span>
+                </a>
+                {% endif %}
+              </ul>
+          </div>
+        </div>
+        <br>
+
+        <form class="d-flex w-100 d-md-none" method="get" action = "{% url 'store:products' %}">
+          <input name = "query" class="form-control me-2"  type="text" value ="{{query}}" placeholder="Search products or FAQ">
+          <button class="btn btn-outline-light border-black text-black">Search</button>
+        </form>
+
+      </div>
+    </nav>
+  </header>
+
+  <main class="pt-4">
+    <div id="content">{% block content %} {% endblock %}</div>
+  </main>
+
+  <footer class="container-fluid px-md-4 py-5">
+    <hr>
+    <div class="row col-12 p-2 d-flex justify-content-between">
+      <div class="col-9">
+        <h4 class="mb-2 font-semibold text-gray-400">About</h4>
+        <p class="text-lg text-muted">ComputeNest is your premier destination for top-quality computer supplies. With an extensive product range, expert guidance, and competitive prices, we ensure a convenient and reliable shopping experience. Our commitment to quality and community engagement sets us apart,
+        making us the go-to choice for all your computing needs.
+        </p>
+      </div>
+      <div class="col-1">
+      </div>
+      <div class="col-2">
+        <h4>Menu</h4>
+        <ul class="list-unstyled">
+          <li><a class="custom-link" href="#">About</a></li>
+          <li><a class="custom-link" href="#">Contact</a></li>
+          <li><a class="custom-link" href="#">Privacy policy</a></li>
+          <li><a class="custom-link" href="#">Term of use</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

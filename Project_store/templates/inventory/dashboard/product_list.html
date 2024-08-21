@@ -1,0 +1,76 @@
+{% extends '../topside.html' %}
+{% block title %}Products Page{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                Category
+            </div>
+            <div class="card-body " >
+                <div class="card" style = "align-items:center;text-align: center;">
+                    <a href="{% url 'inventory:categories' %}"  type="button"   class="add-button text-decoration-none small">Category List</a>
+                </div>
+                <br>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                
+                <div class="orders-row">
+                    <input class="btn btn-info btn-block text-center text-white my-3" type="submit" value="Create category"> 
+                </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    <div class="card card-body col-md-9">
+        <div class="card col-md-12" style = "align-items:center;text-align: center;"> 
+            <a href="{% url 'inventory:create_product' %}"  type="button"   class="add-button text-decoration-none small">Create product</a>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <table class="table bg-white">
+                <thead class="bg-info text-white">
+                    <tr>
+                        <th scope="col">Product nº</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">InStock</th>
+                        <th scope="col">Supplier</th>
+                        <th scope="col">Price(€)</th>
+                        <th scope="col">Active</th>
+                      
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            <p class="card-text ">
+                                <a class="custom-link"  href="{% url 'inventory:update_product' product.id %}"> {{ product.ref_no}}</a>
+                            </p>
+                        </td>
+                        <td>{{ product.name|slice:":10"|title}}</td>                        
+                        <td>{{ product.category|slice:":10"|title }}</td>
+                        <td>{{ product.stock_real }}</td>
+                        <td>{{ product.supplier_id|slice:":10"|title}}</td>
+                        <td>{{ product.sell_price }}</td>
+                        <td>
+                            <input type="checkbox" {% if product.is_active %} checked {% endif %} class= "no-events-field" >
+                        </td>
+                        
+                        
+            
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

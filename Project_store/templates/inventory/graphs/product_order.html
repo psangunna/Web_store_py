@@ -1,0 +1,104 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}Product & Order Page{% endblock %}
+
+{% block content %}
+<!--Se incluye la biblioteca Plotly desde un CDN. Plotly es una biblioteca de gráficos interactivos, 
+y este script proporciona las funciones necesarias para crear gráficos en la página.-->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div class =" my-3">
+    <h3 class ="h2">Product & Order Costs per Week</h3>
+    <div>
+        The graph shows and compares the sold and cost of each product weekly, considering both orders and costs.
+        <a class="custom-link" href="{% url 'graphs:dashboard_graphs' %}">Back to Graphs Dashboard</a>
+    </div>
+    <hr>
+    <div class=" table-container">
+        <div>
+            <p  style = "text-align: center;">Orders</p>
+            {% if order_info_per_week|length == 0 %}
+            <div style = "text-align: center;">There is no data to display</div>
+            {% else %}
+            
+            {% for week, order_data in order_info_per_week.items %}
+            <table>
+                <thead>
+                    
+                    {% if forloop.first %}
+                    <tr>
+                        <th style="width: 50%">Name</th>
+                        <th style="width: 25%">Quantity</th>
+                        <th style="width: 25%"> Sell Cost(€)</th>
+                    </tr>
+        
+                    {% endif %}
+                    <tr>
+                        <th class="grey" colspan="3">{{ week|date:"Y-m-d" }}</th>
+                    </tr>
+        
+                    
+                </thead>
+                <tbody>
+                    {% for product_data in order_data.products %}
+                        <tr>
+                            <td style="width: 50%" >{{ product_data.product_name }}</td>
+                            <td style="width: 25%" >{{ product_data.total_quantity }}</td>
+                            <td style="width: 25%">{{ product_data.total_price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+        {% endif %}
+        </div>
+        <div>
+            <p style = "text-align: center;">Products</p>
+            {% if product_info_per_week|length == 0 %}
+            <div style = "text-align: center;">There is no data to display</div>
+            {% else %}
+            {% for week, products in product_info_per_week.items %}
+            <table>
+                <thead>
+                    
+                    {% if forloop.first %}
+                    <tr>
+                        <th style="width: 50%">Name</th>
+                        <th style="width: 25%">Quantity</th>
+                        <th style="width: 25%">Buy Cost(€)</th>
+                    </tr>
+        
+                    {% endif %}
+                    <tr>
+                        <th class="grey" colspan="3">{{ week|date:"Y-m-d" }}</th>
+                    </tr>
+        
+                    
+                </thead>
+                <tbody>
+                    {% for product_data in products %}
+                        <tr>
+                            <td style="width: 50%" >{{ product_data.product_name }}</td>
+                            <td style="width: 25%" >{{ product_data.total_quantity }}</td>
+                            <td style="width: 25%">{{ product_data.total_price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endfor %}
+            {% endif %}
+        </div>
+    
+    
+    </div>
+    {% if product_info_per_week|length != 0 or order_info_per_week|length != 0 %}
+    <div >
+        {{ graph_div2|safe }}
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,649 @@
+{% extends '../base.html' %}
+{% block title %}
+{% if form.instance.pk %}Update{% else %}Create{% endif %} Invoice
+{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class= "my-3">
+    <h2>{% if form.instance.pk %}Update{% else %}Create{% endif %} Invoice</h2>
+    <form class="inventory-form" id="InvoiceForm" method="post">
+        {% csrf_token %} 
+            <div class = "card card-body col-md-12 mb-0 my-3">
+                {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                <br>
+                {% endfor %}
+                {% endif %}
+                <div id = "Div1">
+                    <div class="invoices-row">
+                        <div class="form-group col-md-5 mb-0 field-readonly">
+                            {% if form.instance.pk %}
+                                {{ form.ref_no |as_crispy_field}}
+                            {% else %}
+                            <div class="form-gcus">
+                                <label for="id_inv_no">{{ form.ref_no.label }}</label>
+                                <input type="text" name="id_inv_no" value='{{inv_number}}'  class="px-2 rounded border textinput form-control" maxlength="15" readonly="" id="id_inv_no">
+                            
+                            </div>
+                            {% endif %}
+                        </div>
+    
+                        <div class="form-group col-md-5 mb-0">
+                            {{form.inv_date |as_crispy_field}}
+                        </div>
+    
+                    </div>
+                    <div class="form-group col-md-12 mb-0 my-2 ">
+                        {{ form.supplier|as_crispy_field}}
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-12 mb-0 my-2">
+                    {{form.observations |as_crispy_field}}
+                </div>
+
+                {% if form.instance.pk %}
+                <div class="invoices-row my-2">
+                    <div class="form-grup col-md-5 mb-0" id = "totalPaidContainer">
+                        {{form.total_paid |as_crispy_field}}
+                        <strong ><small id="error-message" style="color:#E01F05;"></small></strong>
+                    </div>
+                    <div class="form-group col-md-5 mb-0 field-readonly">
+                        {{form.to_paid |as_crispy_field}}
+                    </div>
+                    <div class="form-group col-md-2 mb-0 my-4 {% if no_editable %}no-events-field{% endif %}" >
+                        {{form.is_paid |as_crispy_field}}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class= "card card-body my-2" >
+                <h3>Items</h3>
+                <hr>
+                {{ formset.management_form }}
+                <div id = "Div2">
+                    <div id="formContainer" >    
+                        {% for form in formset %}
+                        
+                            {% if forloop.first %}
+                                <div class="invoices-row">
+                                    <div class=" form-group col-md-3 " style ="padding-left:20px ;">{{form.product.label}}</div>
+                                    <div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.price.label}}</div>
+                                    <div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.qty.label}}</div>
+                                    <div class=" form-group col-md-2 " style ="padding-left:20px ;">{{form.amount.label}}</div>
+                                    {% if invoice %}
+                                    <div class=" form-group col-md-1 ">Delete</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            
+                            <div class="formItems">
+            
+                                <div class="invoices-row">
+                                    <div class="form-group card col-md-3" >
+                                        {{form.product}}
+                                        {% for error in form.product.errors %}
+                                        <small style="text-align:center; color: #E01F05"><strong>{{error}}</strong> </small>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group card col-md-2">
+                                        {{form.price}}
+                                        {% for error in form.price.errors %}
+                                        <small style = " text-align:center; color: #E01F05"> <strong>{{error}}</strong></small>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group card col-md-2">
+                                        {{form.qty}}
+                                        {% for error in form.qty.errors %}
+                                        <small style = " text-align:center; color: #E01F05"><strong>{{error}}</strong></small>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group card col-md-2 field-readonly">
+                                        {{form.amount}}
+                                    </div>
+                                    {% if invoice %}
+                                    <div class="form-group col-md-1 " style = "align-self: center;">{{form.DELETE}}</div>
+                                    {% endif %}
+                                </div>
+                                                                
+                                {% for field in form.visible_fields %}
+                                    <div>
+                                        {#Include the hidden fields in the form #}
+                                        {% if forloop.first %}
+                                        {% for hidden in form.hidden_fields %}
+                                        {{ hidden }}
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    
+                                    </div>
+                                {% endfor %}
+            
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class= "col-md-12 mb-0 my-3">
+                        <table style="width:100% ;"  >
+                            <tr class= "col-md-12 mb-0 my-3" > 
+                                <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px ">Subtotal €</td>
+                                <td  class= "col-md-3 mb-0 my-3">
+                                    <input type="text" value="0.00" class="w-50 rounded border px-2" id = 'subtotal' readonly>
+                                </td>
+                            </tr>
+                            <tr class= "col-md-12 mb-0 my-3">
+                                <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px">{{ form.tax.label }}</td>
+                                <td  class= "col-md-3 mb-0 my-3" id="tax">
+                                    {{ form.tax }}
+                                </td>
+                            </tr>
+                            <tr class= "col-md-12 mb-0 my-3">
+                                <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px ;">{{ form.discount.label}}</td>
+                                <td id = 'discount' class= "col-md-3 mb-0 my-3">{{ form.discount }}</td>
+                            </tr>
+
+                            <tr>
+                                <td class= "col-md-8 mb-0 my-3" style="text-align: right;border:4px; padding-right:3px">{{ form.total.label}}</td>
+                                <td id="total-paid-container" class= "col-md-3 mb-0 my-3 field-readonly">{{ form.total}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card col-md-12 my-3" style = "align-items:center;text-align: center;"> 
+                    <a type="button" id="add-more"  class="add-button text-decoration-none small" {% if  no_editable  %} style = "display:none"{% endif %} > Add line </a>
+                     
+                </div> 
+
+                <div class="col-md-12 mb-0 my-3">
+
+                    {% if invoice %}
+                    <h5>Other details</h5>
+                    <hr>
+                    <div class="orders-row my-2">
+                        <div class="form-group col-md-5 mb-0 ">
+                            <label for="update">Created by</label><br>
+                            <input  name="update" class="w-100 rounded border" value="{{invoice.created_by}}" readonly>
+                        </div>
+                        <div class="form-group col-md-5 mb-0">
+                            <label for="update">Created at</label><br>
+                            <input  name="update" class="w-100 rounded border"  value="{{invoice.created_at}}" readonly>
+                        </div>
+                    </div>
+                    <div class="orders-row my-2">
+                        <div class="form-group col-md-5 mb-0">
+                            <label for="update">Updated at</label><br>
+                            <input  name="update" class="w-100 rounded border" value="{{invoice.updated_at}}" readonly>
+                        </div>
+                        <div class="form-group col-md-5 mb-0">
+                        
+                            {% if invoice.is_paid %}
+                            <label for="update">Paid at</label><br>
+                            <input  name="update" class="w-100 rounded border"  value="{{invoice.paid_at}}" readonly>
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+
+                    {% endif %}
+                </div>
+
+            </div>
+            {% if not no_editable %}
+            <button class="btn_save btn-block py-2 mb-4 mt-5 fw-bold w-100 my-2" type="submit" value="Save changes">Save
+                    Changes
+            </button> 
+            {% endif %}
+            {% if form.instance.pk%}
+            <a href="{% url 'inventory:invoices' %}" role="button" class="btn btn-secondary w-100">
+                {% if  no_editable %}
+                    Go back
+                {% else %}
+                    Cancel
+                {% endif %}
+            </a>
+            {% else %}
+            <a href="{% url 'inventory:suppliers' %}" role="button" class="btn btn-secondary w-100">Cancel</a>
+            {%endif%}
+        
+    </form>
+    {% if form.instance.pk and not no_editable %}
+    
+        <form class="inventory-form" action="{% url 'inventory:delete_invoice' form.instance.pk %}" method="post">
+            {% csrf_token %}
+            <p class=" h3 pt-4 font-weight-bold">Delete Invoice</p>
+            <p>Are you sure you want to delete the invoice ?</p>
+            <button type="submit" role="button" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100">Delete</button>
+        </form>
+    {% endif %}
+</div>
+
+
+
+<div class = "hidden" id = "empty_form">
+    <div class="invoices-row ">
+        <div class="form-group card col-md-3" >{{formset.empty_form.product}}</div>
+        <div class="form-group card col-md-2">{{formset.empty_form.price}}</div>
+        <div class="form-group card col-md-2">{{formset.empty_form.qty}}</div>
+        <div class="form-group card col-md-2">{{formset.empty_form.amount}}</div>
+        {% if invoice %}
+        <div class="form-group col-md-1 " style = "align-self: center;">{{formset.empty_form.DELETE}}</div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        //updateProductOptions:
+        //Esta función se encarga de actualizar las opciones de productos en función del proveedor seleccionado.
+        //Obtiene el valor del proveedor seleccionado y realiza una solicitud AJAX para obtener los productos asociados al proveedor desde el servidor.
+        //Luego, actualiza las opciones de producto en todos los items del formulario.
+        function updateProductOptions(supplierSelect, productSelect) {
+            var selectedSupplier = String(supplierSelect.value);
+            // Store the last selected supplier
+            var lastSelectedSupplier = window.lastSelectedSupplier || null
+           
+
+            // AJAX request to get products based on the selected supplier
+        
+                fetch("{% url 'inventory:get_supplier_products' 0 %}".replace('0', selectedSupplier))
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update product options for all lines
+                        var allForms = document.querySelectorAll('.formItems');
+                        allForms.forEach(form => {
+                            var productSelectInForm = form.querySelector('.select_product');
+                            // Clear existing options
+                            
+                            var selectedProductValue = productSelectInForm.value;
+                           
+
+                            productSelectInForm.innerHTML = '';
+
+                            // Add new options
+                            data.forEach(product => {
+                                var option = document.createElement('option');
+                                option.value = product.id;
+                                option.text = product.name;
+                                productSelectInForm.add(option);
+                                
+                            });
+
+                            // Set back the selected product value for this form
+                            if (selectedSupplier === lastSelectedSupplier | lastSelectedSupplier === null){
+                                productSelectInForm.value = selectedProductValue;
+                               
+                            }
+                                
+
+                                
+                        });
+
+                        // Update the last selected supplier
+                        window.lastSelectedSupplier = selectedSupplier;
+
+                    });
+        }
+
+
+        // Trigger the updateProductOptions function on page load
+        var supplierSelect = document.querySelector('.select_supplier');
+        var productSelect = document.querySelector('.select_product');
+        supplierSelect.addEventListener('change', function () {
+            updateProductOptions(supplierSelect, productSelect);
+        });
+        //calculateAmount:
+        //Calcula el importe total de cada línea en los formularios.
+        //Escucha los eventos keyup en los campos de cantidad (qty) y precio (price) en todos los formularios, 
+        //y recalcula el importe(amount) multiplicando la cantidad por el precio.
+
+        function calculateAmount() {
+
+            var forms = document.querySelectorAll("#InvoiceForm .formItems");
+
+            forms.forEach(function(form) {
+            var qtyInput = form.querySelector("[id$='-qty']");
+            var priceInput = form.querySelector("[id$='-price']");
+            var amountInput = form.querySelector("[id$='-amount']");
+        
+            qtyInput.addEventListener("keyup", calculateMultiplication);
+            priceInput.addEventListener("keyup", calculateMultiplication);
+        
+            function calculateMultiplication() {
+               
+                var qty = parseInt(qtyInput.value) || 0;
+                var price = parseInt(priceInput.value) || 0;
+                var amount = qty * price;
+                amountInput.value = amount.toFixed(2);
+            }
+        });
+            
+        }
+        // Add an event listener to recalculate the amount
+        document.getElementById("formContainer").addEventListener("keyup", calculateAmount);
+       
+       
+        // Function updateTotalPaid
+        //Actualiza el importe total, el impuesto y el descuento.
+        //Obtiene los valores de impuesto y descuento, y luego suma los importes de todas las líneas para obtener el total.
+        //Calcula el impuesto adicional en base al total si el impuesto es mayor que cero.
+        //Resta el descuento al total y actualiza los campos correspondientes en el formulario.
+        function updateTotalPaid() {
+            const totalForms = document.getElementById('id_total')
+            const taxForms = document.getElementById('id_tax')
+            const discountForms = document.getElementById('id_discount')
+            var tax = parseFloat(document.getElementById('id_tax').value) || 0;
+            var discount = parseFloat(document.getElementById('id_discount').value) || 0;
+            let total = 0
+            var amountInputs = document.querySelectorAll("[id$='-amount']");
+
+            amountInputs.forEach(function(input) {
+                var amount = parseInt(input.value) || 0;
+                total += amount;
+            });
+
+            var subtotal = total
+            // Update the subtotal field
+            document.getElementById('subtotal').value = subtotal.toFixed(2);
+        
+            // Calculate total and update the total field
+        
+            let tax_aux = 0
+            if (tax > 0) { tax_aux = total*(0.01 * tax) }
+            total = total + tax_aux - discount
+            total = total.toFixed(2)
+            var discount = discount.toFixed(2);
+            //set the value in the form
+            totalForms.setAttribute('value', total  )
+            taxForms.setAttribute('value', tax  )
+            discountForms.setAttribute('value', discount  )
+
+         
+
+
+        } 
+        // Add an event listener to recalculate totalPaid whenever a key is released
+        document.addEventListener("keyup", updateTotalPaid);
+        // Initial calculation on page load
+        updateTotalPaid() 
+
+    
+        //La función add_new_form añade una nueva línea en las posicioned del formulario cuando se hace clic en añdir línea. 
+        //Clona un formulario vacío, actualiza identificadores y nombres, y configura eventos. 
+        //También actualiza las opciones de productos para la nueva línea en función del proveedor seleccionado.
+
+        const addMoreBtn = document.getElementById('add-more')
+        const totalNewForms = document.getElementById('id_items-TOTAL_FORMS')
+        addMoreBtn.addEventListener('click', add_new_form)
+       
+
+        function add_new_form(event) {
+            if (event) {
+            event.preventDefault()
+
+            }
+            
+           
+            const currentIngredientForms = document.getElementsByClassName('formItems')
+            const currentFormCount = currentIngredientForms.length 
+            const formCopyTarget = document.getElementById("formContainer")
+            const copyEmptyFormEl = document.getElementById('empty_form').cloneNode(true)
+            copyEmptyFormEl.setAttribute('class', 'formItems')
+            copyEmptyFormEl.setAttribute('id', `items-${currentFormCount}`)
+            const regex = new RegExp('__prefix__', 'g')
+           
+            copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount)
+            totalNewForms.setAttribute('value', currentFormCount + 1 )
+
+
+            // Calculate and set amount
+            const priceInput = copyEmptyFormEl.querySelector(`#id_items-${currentFormCount}-price`);
+            const qtyInput = copyEmptyFormEl.querySelector(`#id_items-${currentFormCount}-qty`);
+            const amountInput = copyEmptyFormEl.querySelector(`#id_items-${currentFormCount}-amount`);
+            var supplierSelect = document.querySelector('.select_supplier');
+            var productSelect = copyEmptyFormEl.querySelector('.select_product'); // Update to use copyEmptyFormEl
+
+
+            // Define the updateProductOptions function locally
+            function updateProductOptions() {
+                var selectedSupplier = String(supplierSelect.value);
+             
+                if (selectedSupplier.trim() !== '') {
+                  
+
+                    // AJAX request to get products based on the selected supplier
+                    // Implement this endpoint in your Django views
+                    fetch("{% url 'inventory:get_supplier_products' 0 %}".replace('0', selectedSupplier))
+                        .then(response => response.json())
+                        .then(data => {
+                            // Clear existing options
+                            productSelect.innerHTML = '';
+
+                            // Add new options
+                            data.forEach(product => {
+                                var option = document.createElement('option');
+                                option.value = product.id;
+                                option.text = product.name;
+                                productSelect.add(option);
+                            });
+
+                        });
+                    }
+            }
+
+            // Call updateProductOptions to populate product options for the new form
+            updateProductOptions();
+
+            //now add empty form element to our html form
+            priceInput.addEventListener("keyup",  calculateAmount);
+            qtyInput.addEventListener("keyup", calculateAmount);
+    
+            formCopyTarget.append(copyEmptyFormEl)
+           
+        
+        
+        }
+
+        
+
+        //function handleCheckboxChange:
+        //Gestiona el cambio dependiendo del estado checkbox is_paid.
+        //Si el checkbox está marcado, desabilita campos y desactiva la posibilidad de agregar más líneas.
+        //Si el checkbox no está marcado, permite agregar más líneas y habilita los campos
+
+        var errorMessage = document.getElementById('error-message')
+        var isPaidCheckbox = document.getElementById('id_is_paid');
+        var addMoreButton = document.getElementById('add-more');
+        var ToPaidForms = document.getElementById('id_to_paid');
+        var totalPaidForms = document.getElementById('id_total_paid');
+        var totalForms = document.getElementById('id_total');
+        var totalPaidReadonly = document.getElementById('totalPaidContainer');
+        var elementCheckboxs = document.querySelectorAll('.formItems input[type=checkbox]');
+        var myDiv1 = document.getElementById('Div1');
+        var myDiv2 = document.getElementById('Div2');
+
+        //function disable form if the check paid is amrked
+        function handleCheckboxChange()  {
+            let total_aux = 0
+            total_aux = total_aux.toFixed(2)
+
+
+            if (isPaidCheckbox.checked) {
+                
+                
+                ToPaidForms.setAttribute('value', total_aux);
+                ToPaidForms.value = total_aux // total_aux = 0
+
+                addMoreButton.style.display = 'none';
+                totalPaidReadonly.readOnly=true;
+                myDiv1.classList.add('no-events-field');
+                myDiv2.classList.add('no-events-field');
+                totalPaidReadonly.classList.add('no-events-field');
+                elementCheckboxs.forEach(function (element) {
+                    element.checked = false;
+                });
+
+                errorMessage.innerText = '';
+                total_aux = totalForms.value
+
+
+
+            } else {
+
+             
+                ToPaidForms.setAttribute('value', total_aux);
+                ToPaidForms.value = total_aux;
+
+                addMoreButton.style.display = 'block';
+                totalPaidReadonly.readOnly=false;
+                myDiv1.classList.remove('no-events-field');
+                myDiv2.classList.remove('no-events-field');
+                totalPaidReadonly.classList.remove('no-events-field');
+                elementCheckboxs.forEach(function (element) {
+                    element.checked = false;
+                });
+
+                
+            }
+
+            totalPaidForms.value = total_aux; // value on the screen
+            totalPaidForms.setAttribute('value', total_aux);
+        
+            
+        }
+
+    
+        if (typeof isPaidCheckbox !== 'undefined' && isPaidCheckbox !== null) {
+            isPaidCheckbox.addEventListener('change', handleCheckboxChange) 
+        };
+        
+
+        
+        //function calculateRest
+        //Calcula el importe restante a pagar.
+        //Obtiene los valores de total pagado y total a pagar y calcula el importe restante.
+        //Muestra mensajes de error en caso de números negativos o intentos de pagar más de lo que se debe.
+        var totalPaidForms = document.getElementById('id_total_paid');
+        var toPaidForms = document.getElementById('id_to_paid');
+        var isPaidCheckbox = document.getElementById('id_is_paid');
+        var totalForms = document.getElementById('id_total');
+        var errorMessage = document.getElementById('error-message');  // Add this line;
+        var form = document.getElementById('InvoiceForm');    
+        
+        function calculateRest() {
+        var totalPaid = parseFloat(totalPaidForms.value) || 0;
+        var total = parseFloat(totalForms.value) || 0;
+        let toPaidInput = 0;
+
+        if (totalPaid >= 0 && total >= 0) {
+            // Borra el mensaje de error si tanto totalPaid como total no son negativos
+
+            errorMessage.innerText = "";
+        } else {
+            errorMessage.innerText = "Negative number detected.";
+            return; // Detener el procesamiento adicional si hay un número negativo
+        }
+
+        
+
+        if (total >= totalPaid) {
+            errorMessage.innerText = '';  // Borra el mensaje de error si no es negativo
+
+            if (totalPaid > 0) {
+                toPaidInput = (total - totalPaid).toFixed(2);
+            }
+
+           
+
+            totalPaidForms.setAttribute('value', totalPaid);
+            toPaidForms.setAttribute('value', toPaidInput);
+            toPaidForms.value = toPaidInput;
+
+            if (total == totalPaid) {
+                errorMessage.innerText = 'Total paid is equal to Total, select Paid.';
+            } else {
+                errorMessage.innerText = '';
+            }
+
+        } else {
+          
+            errorMessage.innerText = 'Total paid cannot be greater than Total.';
+           
+        }
+    }
+        
+        //función para evitar guardar el formulario si hay algún error
+        function handleSubmit(event) {
+           
+            if (errorMessage.innerText !== '') {
+               
+                event.preventDefault(); // Impedir guardar del formulario
+                // Puedes agregar lógica adicional o mostrar un mensaje al usuario
+                
+            }
+        }
+
+        if (typeof totalPaidForms!== 'undefined' && totalPaidForms !== null) {
+            totalPaidForms.addEventListener('input', calculateRest)
+            };
+        
+        form.addEventListener('submit', handleSubmit);
+
+
+    //function:disableForm
+    //Deshabilita ciertos campos del formulario si el total pagado es mayor que cero.
+    //Se controlar el estado de los campos dependiendo de si se ha realizado algún pago.
+    //Se evita que se modifiquen los campos del formulario una vez se haya informado el total pagado
+        var totalPaidInput = document.getElementById('id_total_paid');
+        var addMoreButton = document.getElementById('add-more');
+        var myDiv1 = document.getElementById('Div1');
+        var myDiv2 = document.getElementById('Div2');
+        var elementCheckboxs = document.querySelectorAll('.formItems input[type=checkbox]');
+
+        //function to check the value of Paid total and disable fields
+        function disableForm() {
+            // Get the value of the total_paid input
+            if (typeof totalPaidInput!== 'undefined' && totalPaidInput !== null){
+                var totalPaidValue = parseFloat(totalPaidInput.value) || 0;
+                // Change the class based on the total_paid value
+                if (totalPaidValue > 0) {
+                
+                    myDiv1.classList.add('no-events-field');        
+                    myDiv2.classList.add('no-events-field'); 
+                    addMoreButton.style.display = 'none';
+                    
+                    elementCheckboxs.forEach(function (element) {
+                            element.checked = false;
+                        });
+
+                } else {
+                    myDiv1.classList.remove('no-events-field');
+                    myDiv2.classList.remove('no-events-field'); 
+                    addMoreButton.style.display = 'block';
+
+                    elementCheckboxs.forEach(function (element) {
+                            element.checked = false;
+                        });
+                    
+                }
+            }
+            
+
+
+        }
+
+        if (typeof totalPaidInput !== 'undefined' && totalPaidInput !== null) {
+            totalPaidInput.addEventListener('input', disableForm) };
+
+
+
+
+    });
+
+
+
+</script>
+{% endblock %}

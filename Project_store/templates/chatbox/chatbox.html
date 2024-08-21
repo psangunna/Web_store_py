@@ -1,0 +1,30 @@
+{% extends './sub_base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}New Message Page{% endblock %}
+
+{% block sub_content%}
+    <form class="account-form" method="post" action=".">
+        {% csrf_token %}
+            <h1 class=" h2">New Message</h1>
+            <div>If you have any issues or questions,<b> send us a message</b></div>
+            <hr>
+            <div  >
+                {{ form|crispy }}
+            </div>
+        
+            {% if form.errors or form.non_field_errors %}
+            <div class="mb-3 p-6 bg-red-100 rounded-xl">
+                    {% for field in form %}
+                        {{ field.errors }}
+                    {% endfor %}
+        
+                    {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+    
+            <button class="btn btn-info btn-block py-2 mb-6 mt-3 text-white fw-bold w-25 " type="submit" >
+                Send
+            </button>
+        
+    </form>
+{% endblock %}

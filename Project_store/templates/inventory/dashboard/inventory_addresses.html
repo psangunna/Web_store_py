@@ -1,0 +1,107 @@
+{% extends '../base.html' %}
+{% block title %}
+Addresses Page
+{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1 class = "h2 my-2">Manage Addresses <small class="text-muted h4">for {{ customer.user_name }}</small></h1>
+<hr />
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+<div >
+    <div class="col-md-12">
+
+        <form method="post" action="#">
+            <div class = "">
+                {% csrf_token %}
+                {{ formset.management_form }}
+            
+                {% for form in formset %}
+                    <div class = "card card-body">
+                        <legend>Address {{ forloop.counter }}</legend>
+                        <hr>
+                        <div class="form-group col-md-12 mb-0 my-2">
+                            {{ form.full_name|as_crispy_field }}
+                        </div>
+                                                                   
+                        <div class="form-group col-md-12 mb-0 my-2">
+                            {{ form.address_line|as_crispy_field }}
+                        </div>
+                        
+                        <div class="form-group col-md-12 mb-0 my-2">
+                                {{ form.address_line2|as_crispy_field }}
+                        </div>
+                        <div class="invoices-row my-2">
+                            <div class="form-group col-md-5 mb-0">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-5 mb-0">
+                                {{ form.phone|as_crispy_field }}
+                            </div>
+                        </div>
+                        <div class="invoices-row my-2">
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.town|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.country|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.postcode|as_crispy_field }}
+                            </div>
+                        </div>
+                        <div class="invoices-row my-2">
+                            <div class="form-group col-md-5 mb-0">
+                                {{ form.default|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-5 mb-0">
+                                {{ form.DELETE|as_crispy_field }}
+                            </div>
+                        </div> 
+                    </div>
+                    <br>
+                    {% for field in form.visible_fields %}
+                    {#Include the hidden fields in the form #}
+                    {% if forloop.first %}
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+        
+                {% endfor %}
+                
+            </div>
+            <button class="btn_save btn-block py-2 mb-2 mt-2 fw-bold w-100" type="submit" value="Save changes">
+                Save
+            </button>       
+        </form>
+        <a href="{% url 'inventory:update_account' customer.id %}" role="button" class="btn btn-secondary w-100">Cancel</a>
+        
+  </div>
+</div>
+
+<!-- Add checkbox behavior script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select all checkboxes with name 'addresses-N-default' in the 'id_addresses-N-default' format
+        var checkboxes = document.querySelectorAll('input[name^="addresses-"][name$="-default"]');
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // Uncheck all checkboxes except the one that was clicked
+                checkboxes.forEach(function(otherCheckbox) {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false;
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

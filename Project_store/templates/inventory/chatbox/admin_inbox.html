@@ -1,0 +1,48 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}Inbox Page{% endblock %}
+
+{% block content %}
+    <h1 class="h2 my-3">Messages</h1>
+    <hr>
+    {% if conversations|length == 0 %}
+    <div class="col-12">There are no messages
+    </div>
+    {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class= "row g-3">
+        {% for conversation in conversations %}
+            <div class="col-12 bg-light p-1 d-flex justify-content-between fw-bold">
+                
+                    <div class="col-4 bg-light p-1 d-flex justify-content-between">
+                        <a class=" text-decoration-none text-black" href="#">
+                            <p> {{ conversation.order.ref_no }}</p>
+                        </a>
+                        
+                    </div>
+                
+                <div class="col-6 bg-light p-1 d-flex justify-content-between">
+                    <a class="custom-link" href="{% url 'chatbox:detail_inbox' conversation.id %}">                  
+                        <div>
+                            {% for member in conversation.members.all %}
+                            {% if member != request.user %}
+                                <p class="mb-2"><strong>{{ member }}</strong> | {{ conversation.modified_at }}</p>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </a>
+                </div>
+                <div class="col-2 bg-light p-1 d-flex justify-content-between">
+                    <a href="{% url 'chatbox:delete_message' conversation.id %}" type="button"  class="btn btn-danger btn-block  mb-2 fw-bold w-50">Delete</a>
+                </div>    
+            </div>
+
+        {% endfor %}
+    </div>
+{% endblock %}

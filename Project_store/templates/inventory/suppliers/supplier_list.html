@@ -1,0 +1,51 @@
+{% extends '../topside.html' %}
+{% block title %}Suppliers Page{% endblock %}
+{% load crispy_forms_tags %}
+ 
+{% block content %}
+<div class="row my-4">
+    <div class="col-md-3 ">
+        <div class="card">
+            <div class="sidenave">
+                <a href="{% url 'inventory:create_supplier'%}">New supplier</a>
+                <hr>
+                <a href="{% url 'inventory:create_invoice'%}">Purchase invoice</a>
+                <hr>
+                <a href="{% url 'inventory:invoices'%}">Purchase invoice list</a>
+              
+            </div>
+        </div>
+    </div>
+    <div class="card card-body col-md-4">
+            <table class="table bg-white">
+                <thead class="bg-info text-white">
+                    <tr>
+                        <th scope="col">Supplier nº</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Contact nº</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Active</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in suppliers %}
+                    <tr>
+                        <td>
+                            <p class="card-text ">
+                                <a class="custom-link" href="{% url 'inventory:update_supplier' supplier.id %}"> {{ supplier.ref_no}} </a>
+                            </p>
+                        </td>
+                        <td>{{ supplier.name|slice:":10"|title}}</td>
+                        <td>{{ supplier.contact_no}}</td>
+                        <td>{{ supplier.email|slice:":20" }}</td>
+                        <td>
+                            <input type="checkbox" {% if  supplier.is_active %}checked{% endif %} class="no-events-field">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+{% endblock %}

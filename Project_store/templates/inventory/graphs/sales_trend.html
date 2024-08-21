@@ -1,0 +1,61 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}Sales Trend Page{% endblock %}
+
+{% block content %}
+<!--Se incluye la biblioteca Plotly desde un CDN. Plotly es una biblioteca de gráficos interactivos, 
+y este script proporciona las funciones necesarias para crear gráficos en la página.-->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div class="my-3">
+  <h3 class ="h2">Sales Trend </h3>
+  <div>
+    The graph shows the different sales trend from over the time.
+    <a class="custom-link" href="{% url 'graphs:dashboard_graphs' %}">Back to Graphs Dashboard</a>
+  </div>
+ 
+  <hr>
+    <div class="col-md-10 my-4">
+        <div class="bg-white" >
+            <div class="card-body">
+                <div id = "chart1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Parsear the JSON data
+    var salesGraphData = JSON.parse('{{ sales_graph|safe }}');
+  
+    // Extraer x and y data
+    var xData = salesGraphData.map(function(item) { return item.last_sales_date; });
+    var yData = salesGraphData.map(function(item) { return item.sales; });
+  
+    // Create the Plotly.js trace
+    var trace = {
+      x: xData,
+      y: yData,
+      type: 'line',
+      mode: 'lines',
+      name: 'Sales Trend'
+    };
+  
+    // Layout configuration
+    var layout = {
+      xaxis: {
+        title: 'Last Sale Date',
+        type: 'category',  // Specify that the x-axis contains category (date) data
+        tickformat: '%Y-%m-%d'  // Specify the date format for the ticks
+      },
+      yaxis: {
+        title: 'Sales (€)',
+   
+      }
+    };
+
+    // Plot the graph
+    Plotly.newPlot('chart1', [trace], layout);
+
+</script>
+{%endblock%}

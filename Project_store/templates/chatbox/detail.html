@@ -1,0 +1,47 @@
+{% extends './sub_base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Message Details Page{% endblock %}
+
+{% block sub_content %}
+<form class="account-form mt-6" method="post" action=".">
+        {% csrf_token %}
+ 
+            <h1 class=" h2">Your Messages</h1>
+            <div>If you have any issues or questions,<b> send us a message. </b><a class = "custom-link" href="{% url 'chatbox:inbox' %}"> All your Messages</a></div>
+            <hr>
+            <div class="myDiv">
+                {% for message in conversation.messages.all %}
+                
+                    {% if message.created_by == request.user %}
+                    <div style ="background-color:rgba(6, 191, 237, 0.2); border-radius: 8px;" >
+                        <div class="mb-4 pb-2 py-3 mx-3 text-black">
+                            <p><strong>You</strong> @ {{ message.created_at }}</p>
+                            <p>{{ message.content }}</p>
+                        </div>
+
+                    </div>
+                    {% else %}
+                    <div style ="background-color:rgba(255, 0, 0, 0.2); border-radius: 8px;">
+                        <div class="mb-4 pb-2 py-3 mx-3 text-black">
+                            <p><strong>{{ message.created_by }}</strong> @ {{ message.created_at }}</p>
+                            <p>{{ message.content }}</p>
+                        </div>
+
+                    </div>
+                    {% endif %}
+
+                   
+                {% endfor %}
+            </div>
+
+            <div  >
+                {{ form|crispy }}
+            </div>
+        
+    
+            <button class="btn btn-info btn-block py-2 mb-6 mt-3 text-white fw-bold w-25 " type="submit" >
+                Send
+            </button>
+        
+</form>
+{% endblock %}

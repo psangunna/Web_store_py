@@ -1,0 +1,141 @@
+{% extends "../base.html" %}
+{% load static %}
+{% block title %}Basket Summary{%endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="col-12">
+    <h1 class="h2">Your Basket</h1>
+  </div>
+  <div class="col-12">
+    <p>Manage your <b>items</b> in your basket</p>
+  </div>
+  <hr />
+</div>
+<div class="container">
+  <div class="row g-3">
+    {% if basket|length == 0 %}
+    <div class="col-12">Your basket is empty, <a class="custom-link" href="{% url 'store:store_home' %}"> Shop</a></div>
+    {% else %}
+    <div class="col-12 bg-light p-3 d-flex justify-content-between">
+      <div class="d-flex d-flex-inline">
+        <div class="pe-3">Order</div>
+      </div>
+    </div>
+    <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
+      <div class="d-flex bd-highlight ms-0">
+        <div class="p-2 flex-grow-1 bd-highlight">Sub Total:</div>
+        <div class="p-2 bd-highlight"><span class="fw-bold h5">€</span><span id="subtotal"class="fw-bold h5">{{basket.get_subtotal_price}}</span></div>
+      </div>
+      <div class="d-flex bd-highlight">
+        <div class="p-2 flex-grow-1 bd-highlight">Delivery Cost:</div>
+        <div class="p-2 bd-highlight"><span class="fw-bold h5">€11.50</span><span id="delivery_price" class="fw-bold h5">{{basket.get_delivery_price}}</span></div>
+      </div>
+      <div class="d-flex bd-highlight">
+        <div class="p-2 flex-grow-1 bd-highlight">Total:</div>
+        <div class="p-2 bd-highlight"><span class="fw-bold h5">€</span><span id="total"class="fw-bold h5">{{basket.get_total_price}}</span></div>
+      </div>
+      <div class="d-grid gap-2 ">
+        <a role="button" href="{% url 'options:delivery_address' %}" class= "btn btn-info btn-block text-center text-white fw-bold w-100" type="button">Checkout</a>
+        <a role="button" href="{% url 'orders:order_saved' %}" class= "btn btn-warning btn-block text-center text-white fw-bold w-100" type="button">Save for later</a>
+
+      </div>
+    </div>
+    <div class="col-md-7 col-lg-8 p-0">
+      {% for item in basket %}
+      {% with product=item.product %}
+      <div class="card mb-3 border-0 product-item" data-index="{{product.id}}">
+        <div class="row g-0">
+          <div class="col-md-2 d-none d-md-block">
+            <img class="img-fluid mx-auto d-block" alt="Responsive image"
+            src="{{ product.image.url }}" />
+          </div>
+          <div class="col-md-10 ps-md-3">
+            <div class="card-body p-1">
+              <a class="text-decoration-none text-reset" href="{{item.product.get_absolute_url}}">
+                <p class="card-text pb-3">{{product.name|title}}</p>
+              </a>
+              <label for="quantity" class="small">Quantity</label>
+              <input id="quantity{{product.id}}" type="number" value="{{item.qty}}" style="width: 50px;"></input>
+              <a type="button" id="update-button" data-index="{{product.id}}"
+                class="update-button  custom-link small ps-3">Update</a>
+              <a type="button" id="delete-button" data-index="{{product.id}}"
+                class="delete-button  custom-link small ">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  // Delete Item
+  //Esta función se ejecuta cuando se hace clic en el botón de eliminación (.delete-button). 
+  //Elimina un producto del carrito de compras y actualiza la información del carrito de compras en tiempo real mediante una solicitud AJAX.
+  //Actualiza la cantidad total de productos, el subtotal y el total en la interfaz después de la eliminación.
+
+  $(document).on("click", ".delete-button", function (e) {
+    e.preventDefault();
+    var prodid = $(this).data("index");
+   
+    $.ajax({
+      type: "POST",
+      url: '{% url "basket:basket_delete" %}',
+      data: {
+        productid: $(this).data("index"),
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: "post",
+      },
+      success: function (json) {
+        $('.product-item[data-index="' + prodid + '"]').remove();
+
+        if (json.qty == 0) {
+          total = 0
+          subtotal = 0
+        } else {
+          total = (parseFloat(json.subtotal) + 11.50).toFixed(2);
+          subtotal = json.subtotal
+        }
+
+        document.getElementById("subtotal").innerHTML = subtotal;
+        document.getElementById("basket-qty").innerHTML = json.qty;
+        document.getElementById("total").innerHTML = total;
+      },
+      error: function (xhr, errmsg, err) {},
+    });
+  });
+
+  // Update Item
+  //Esta función se ejecuta cuando se hace clic en el botón de actualización (.update-button). 
+  //Actualiza la cantidad de un producto en el carrito de compras y refleja los cambios en tiempo real mediante una solicitud AJAX.
+  //Actualiza visualmente la cantidad total de productos, el subtotal y el total en la interfaz después de la actualización.
+  $(document).on("click", ".update-button", function (e) {
+    e.preventDefault();
+    var prodid = $(this).data("index");
+    var quantity = $("#quantity" + prodid).val();
+    $.ajax({
+      type: "POST",
+      url: '{% url "basket:basket_update" %}',
+      data: {
+        productid: $(this).data("index"),
+        productqty: quantity,  // Use the input field value
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: "post",
+      },
+      success: function (json) {
+
+        total = (parseFloat(json.subtotal) + 11.50).toFixed(2);
+        document.getElementById("basket-qty").innerHTML = json.qty;
+        document.getElementById("subtotal").innerHTML = json.subtotal;
+        document.getElementById("total").innerHTML = total;
+      },
+      error: function (xhr, errmsg, err) {},
+    });
+  });
+</script>
+
+{% endblock %}

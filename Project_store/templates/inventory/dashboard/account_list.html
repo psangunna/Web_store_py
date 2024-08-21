@@ -1,0 +1,48 @@
+{% extends '../topside.html' %}
+{% block title %}Accounts Page{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="card card-body row my-4">
+    <div class="card col-md-12" style = "align-items:center;text-align: center;"> 
+        <a class="add-button text-decoration-none small" href="{% url 'inventory:create_account'%}"  type="button" >Create account</a>
+    </div>
+    <br>
+    <div class="col-md-12">
+        <table class="table bg-white">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col">Email</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Contact nº</th>
+                    <th scope="col">Last login</th>
+                    <th scope="col">Active</th>
+                    <th scope="col">Employees</th>
+                    <!--th scope="col">Super User</!--th-->
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in accounts %} 
+                <tr>
+                    <td>
+                        <p class="card-text ">
+                            <a class="custom-link" href="{% url 'inventory:update_account' account.id %}"> {{ account.email}}</a>
+                        </p>
+                    </td>
+                    <td>{{ account.user_name|slice:":10"|title}}</td>
+                    <td>{{ account.mobile }}</td>
+                    <td >{{ account.last_login }}</td>
+                    <td>
+                        <input type="checkbox" {% if account.is_active %}checked{% endif %} class="no-events-field">
+                    </td>
+                    <td>
+                        <input type="checkbox" {% if account.is_staff %} checked {% endif %} class="no-events-field">
+                    </td>
+ 
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

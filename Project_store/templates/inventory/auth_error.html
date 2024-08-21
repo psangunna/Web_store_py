@@ -1,0 +1,16 @@
+{% extends "./base.html" %}
+{% block title %}Not authorized{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1 class="my-4">Error</h1>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% endif %}
+</div>
+
+{% endblock %}
