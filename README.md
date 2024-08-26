@@ -6,7 +6,7 @@ Web application created and developed in the Python programming environment usin
 - [Tech stack applied](#stack)
 
 ## _Description_ <a name="description"></a>
-This is my final project for a Python programming course: a web application for selling IT supplies. The app has two main parts: an online store for customers to browse and make purchases, 
+This is my final project for **Tokio Python programming** course: a web application for selling IT supplies. The app has two main parts: an online store for customers to browse and make purchases, 
 and an inventory management section for employees and the admin. It meets the basic requirements of the project, but there's room for future improvements and enhancements. 
 The goal is to provide a solid starting point for a company specializing in tech supplies, with a user-friendly platform for both customers and the management team
 ## _Project Requirements_<a name="requirements"></a> 
